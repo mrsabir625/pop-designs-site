@@ -7,7 +7,12 @@ const { UAParser } = require('ua-parser-js');
 const { OAuth2Client } = require('google-auth-library');
 const mongoose = require('mongoose');
 const multer = require('multer');
-const sharp = require('sharp');
+let sharp = null;
+try {
+  sharp = require('sharp');
+} catch (e) {
+  // sharp is optional native dependency; fallback to raw image buffer if unavailable
+}
 
 const app = express();
 app.set('trust proxy', true);
@@ -293,17 +298,26 @@ app.post('/api/admin/photos/upload', requireAdmin, (req, res) => {
 
       const saved = [];
       for (const file of req.files) {
-        // Resize (max 1600px wide) + compress to JPEG - smaller file, quality stays sharp
-        const compressed = await sharp(file.buffer)
-          .rotate() // auto-fix orientation from phone cameras
-          .resize({ width: 1600, withoutEnlargement: true })
-          .jpeg({ quality: 82 })
-          .toBuffer();
+        let imageData = file.buffer;
+        let mimeType = file.mimetype || 'image/jpeg';
+
+        if (sharp) {
+          try {
+            imageData = await sharp(file.buffer)
+              .rotate() // auto-fix orientation from phone cameras
+              .resize({ width: 1600, withoutEnlargement: true })
+              .jpeg({ quality: 82 })
+              .toBuffer();
+            mimeType = 'image/jpeg';
+          } catch (e) {
+            // fallback to original buffer on error
+          }
+        }
 
         const doc = await Photo.create({
           category,
-          data: compressed,
-          contentType: 'image/jpeg'
+          data: imageData,
+          contentType: mimeType
         });
         saved.push({ _id: doc._id, category: doc.category, uploadedAt: doc.uploadedAt });
       }
@@ -406,7 +420,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-if (require.main === module || !process.env.VERCEL) {
+if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
