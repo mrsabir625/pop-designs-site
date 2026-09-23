@@ -18,10 +18,15 @@ const app = express();
 app.set('trust proxy', true);
 
 const PORT = process.env.PORT || 3000;
-const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || '').toLowerCase().split(',').map(e => e.trim()).filter(Boolean);
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const SESSION_SECRET = process.env.SESSION_SECRET || 'change_this_secret';
-const MONGODB_URI = process.env.MONGODB_URI;
+
+// Admin Access (Supports both mrsabir625@gmail.com and mrsabir635@gmail.com, plus any configured in Vercel environment)
+const DEFAULT_ADMINS = ['mrsabir625@gmail.com', 'mrsabir635@gmail.com'];
+const envAdmins = (process.env.ADMIN_EMAIL || '').toLowerCase().split(',').map(e => e.trim()).filter(Boolean);
+const ADMIN_EMAIL = Array.from(new Set([...DEFAULT_ADMINS, ...envAdmins]));
+
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '156198707118-22002mfa9nlulgigk5di12u24rfoa39d.apps.googleusercontent.com';
+const SESSION_SECRET = process.env.SESSION_SECRET || '7c8e2b9d4f1a6c0e3a5f8b2d9e1a4c7f0b3d6e8a1c4f7b0d2e5a8c1f4b7d0e3a';
+const MONGODB_URI = (process.env.MONGODB_URI || 'mongodb+srv://admin2:Kp2ItR9vV8AGOGbX@cluster0.p7drceo.mongodb.net/?appName=Cluster0').replace(/\s+/g, '');
 
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
@@ -198,7 +203,7 @@ app.post('/api/auth/google', async (req, res) => {
     const email = (payload.email || '').toLowerCase().trim();
 
     if (!payload.email_verified || !ADMIN_EMAIL.includes(email)) {
-      return res.status(403).json({ error: 'This Google account is not authorized.' });
+      return res.status(403).json({ error: `This Google account (${email}) is not authorized.` });
     }
 
     const token = makeSignedToken(email);
