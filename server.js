@@ -19,8 +19,8 @@ app.set('trust proxy', true);
 
 const PORT = process.env.PORT || 3000;
 
-// Admin Access (Supports both mrsabir625@gmail.com and mrsabir635@gmail.com, plus any configured in Vercel environment)
-const DEFAULT_ADMINS = ['mrsabir625@gmail.com', 'mrsabir635@gmail.com'];
+// Admin Access (Only mrsabir625@gmail.com authorized, plus any configured in Vercel environment)
+const DEFAULT_ADMINS = ['mrsabir625@gmail.com'];
 const envAdmins = (process.env.ADMIN_EMAIL || '').toLowerCase().split(',').map(e => e.trim()).filter(Boolean);
 const ADMIN_EMAIL = Array.from(new Set([...DEFAULT_ADMINS, ...envAdmins]));
 

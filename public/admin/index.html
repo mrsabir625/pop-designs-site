@@ -206,6 +206,7 @@
     overflow:hidden;
     border-radius:0 50px 50px 0;
     cursor:pointer;
+    pointer-events:none; /* Disabled by default — ONLY activates on full slide! */
   }
   .slide-real-btn > div{
     transform:scale(3.2);
@@ -812,6 +813,12 @@ document.getElementById('logout-btn').addEventListener('click', async () => {
 
   const triggerGoogleSignIn = () => {
     try {
+      document.cookie = "g_state=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT";
+    } catch(e){}
+
+    if(realBtnWrap) realBtnWrap.style.pointerEvents = 'auto';
+
+    try {
       google.accounts.id.prompt((notification) => {
         if(notification.isNotDisplayed() || notification.isSkippedMoment()){
           const btn = realBtnWrap?.querySelector('div[role="button"]') || realBtnWrap?.querySelector('iframe');
@@ -843,8 +850,8 @@ document.getElementById('logout-btn').addEventListener('click', async () => {
       handle.classList.remove('switched');
       resetSlideText();
       isResetting = false;
-      if(realBtnWrap) realBtnWrap.style.pointerEvents = 'auto';
-    }, 5000);
+      if(realBtnWrap) realBtnWrap.style.pointerEvents = 'none';
+    }, 6000);
   };
 
   const startDrag = (clientX) => {
@@ -870,13 +877,15 @@ document.getElementById('logout-btn').addEventListener('click', async () => {
     isDragging = false;
     const max = getMaxDrag();
     const delta = clientX - startX;
-    if(delta > max * 0.35 || delta > 40){
+    // Strict: ONLY triggers on a real slide across at least 50% of the track (delta >= max * 0.5 and delta > 60px).
+    // Taps have delta < 15px and will NEVER trigger login.
+    if(delta >= max * 0.5 && delta > 60){
       slideToEndAndTrigger();
     } else {
       handle.style.transition = 'transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1)';
       handle.style.transform = 'translateX(0px)';
       resetSlideText();
-      if(realBtnWrap) realBtnWrap.style.pointerEvents = 'auto';
+      if(realBtnWrap) realBtnWrap.style.pointerEvents = 'none';
     }
   };
 
@@ -902,19 +911,6 @@ document.getElementById('logout-btn').addEventListener('click', async () => {
   window.addEventListener('touchend', (e) => {
     if(isDragging && e.changedTouches.length === 1) endDrag(e.changedTouches[0].clientX);
   });
-
-  // Tap on the track or pill
-  pill.addEventListener('click', (e) => {
-    if(isDragging) return;
-    slideToEndAndTrigger();
-  });
-
-  // Tap on realBtnWrap
-  if(realBtnWrap){
-    realBtnWrap.addEventListener('click', () => {
-      if(!isDragging) slideToEndAndTrigger();
-    });
-  }
 })();
 
 /* ============================================================
