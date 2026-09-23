@@ -110,21 +110,14 @@
     display:none;
     max-width:340px;
   }
-  .origin-note{
-    font-size:0.75rem;
-    color:var(--ivory);
-    opacity:0.55;
-    max-width:34ch;
-    margin-top:6px;
-    line-height:1.4;
-  }
-
   /* ---------- LUXURY SLIDE MECHANISM (Website Parity & Responsive) ---------- */
   .slide-container{
     position:relative;
     width:100%;
-    max-width:330px;
-    margin:10px auto 4px;
+    max-width:320px;
+    margin:12px auto 8px;
+    user-select:none;
+    -webkit-user-select:none;
   }
   .slide-track{
     width:100%;
@@ -157,30 +150,31 @@
   }
   .slide-handle{
     position:absolute;
-    left:3px;
-    top:3px;
-    bottom:3px;
-    width:44px;
-    height:42px;
+    left:4px;
+    top:4px;
+    bottom:4px;
+    width:50px;
     border-radius:50px;
     background:linear-gradient(135deg, #FFFFFF 0%, #CBD5E1 100%);
-    box-shadow:0 4px 18px rgba(255,255,255,0.35);
+    box-shadow:0 4px 20px rgba(255,255,255,0.3);
     display:flex;
     align-items:center;
     justify-content:center;
     color:var(--charcoal);
     cursor:grab;
-    z-index:3;
+    z-index:20;
     transition:transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.3s;
     touch-action:none;
+    pointer-events:auto;
   }
   .slide-handle:active{ cursor:grabbing; }
   .slide-handle svg{
-    width:18px;
-    height:18px;
+    width:20px;
+    height:20px;
     stroke:var(--charcoal);
     stroke-width:2.5;
     transition:transform .35s ease;
+    pointer-events:none;
   }
   .slide-handle.switched svg{ transform:rotate(180deg); }
   .slide-text{
@@ -189,25 +183,28 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    padding-left:46px; /* Offset so handle never covers text! */
-    padding-right:12px;
-    font-size:0.86rem;
+    padding-left:52px;
+    padding-right:16px;
+    font-size:0.88rem;
     font-weight:500;
     letter-spacing:0.04em;
     color:var(--offwhite);
     opacity:0.92;
     pointer-events:none;
     white-space:nowrap;
-    transition:opacity .25s ease, transform .25s ease;
+    transition:opacity .25s ease;
     z-index:2;
   }
   .slide-real-btn{
     position:absolute;
-    inset:0;
+    top:0;
+    bottom:0;
+    left:56px;
+    right:0;
     opacity:0.001;
     z-index:5;
     overflow:hidden;
-    border-radius:60px;
+    border-radius:0 50px 50px 0;
     cursor:pointer;
   }
   .slide-real-btn > div{
@@ -597,7 +594,6 @@
     </div>
 
     <p id="error-msg"></p>
-    <p class="origin-note" id="origin-note" style="display:none;"></p>
   </div>
 </div>
 
@@ -755,24 +751,15 @@ async function handleCredentialResponse(response){
 }
 
 window.onload = function(){
-  // Check if running on private LAN IP (like Live Server on mobile)
-  const host = window.location.hostname;
-  if(host && host !== 'localhost' && host !== '127.0.0.1' && !host.includes('spinworld') && !host.includes('vercel.app')){
-    const note = document.getElementById('origin-note');
-    if(note){
-      note.textContent = 'Note: Google Sign-In requires http://localhost:3000 or your configured domain in Google Cloud Console.';
-      note.style.display = 'block';
-    }
-  }
-
   try {
     google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
-      callback: handleCredentialResponse
+      callback: handleCredentialResponse,
+      auto_select: false
     });
     google.accounts.id.renderButton(
       document.getElementById('g_id_signin'),
-      { theme: 'filled_black', size: 'large', shape: 'pill', width: 320 }
+      { theme: 'filled_black', size: 'large', shape: 'pill', width: 280 }
     );
   } catch(e){}
 
@@ -804,43 +791,69 @@ document.getElementById('logout-btn').addEventListener('click', async () => {
   let isDragging = false;
   let startX = 0;
   let currentX = 0;
+  let isResetting = false;
 
-  const getMaxDrag = () => Math.max(0, pill.clientWidth - handle.offsetWidth - 6);
+  const getMaxDrag = () => Math.max(0, pill.clientWidth - handle.offsetWidth - 8);
 
   const updateSlideProgress = (x, max) => {
     if(!slideText) return;
+    const clipLeft = Math.max(0, x + 36);
+    slideText.style.clipPath = `inset(0 0 0 ${clipLeft}px)`;
     const ratio = Math.max(0, Math.min(1, x / max));
-    slideText.style.opacity = (1 - ratio * 1.1).toFixed(2);
+    slideText.style.opacity = (1 - ratio * 1.15).toFixed(2);
   };
 
-  const triggerSignIn = () => {
+  const resetSlideText = () => {
+    if(!slideText) return;
+    slideText.style.transition = 'clip-path 0.35s ease, opacity 0.35s ease';
+    slideText.style.clipPath = 'none';
+    slideText.style.opacity = '0.92';
+  };
+
+  const triggerGoogleSignIn = () => {
     try {
-      google.accounts.id.prompt();
+      google.accounts.id.prompt((notification) => {
+        if(notification.isNotDisplayed() || notification.isSkippedMoment()){
+          const btn = realBtnWrap?.querySelector('div[role="button"]') || realBtnWrap?.querySelector('iframe');
+          if(btn) btn.click();
+        }
+      });
     } catch(e){}
     const iframeBtn = realBtnWrap?.querySelector('div[role="button"]') || realBtnWrap?.querySelector('iframe');
     if(iframeBtn) iframeBtn.click();
   };
 
-  const slideToEndAndReset = () => {
+  const slideToEndAndTrigger = () => {
+    if(isResetting) return;
     const max = getMaxDrag();
     handle.style.transition = 'transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1)';
-    handle.style.transform = 'translateX(' + max + 'px)';
+    handle.style.transform = `translateX(${max}px)`;
+    handle.classList.add('switched');
     if(slideText){
+      slideText.style.transition = 'opacity 0.25s ease';
       slideText.style.opacity = '0';
     }
-    triggerSignIn();
+
+    triggerGoogleSignIn();
+
+    isResetting = true;
     setTimeout(() => {
+      handle.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
       handle.style.transform = 'translateX(0px)';
-      if(slideText){
-        slideText.style.opacity = '0.92';
-      }
-    }, 2500);
+      handle.classList.remove('switched');
+      resetSlideText();
+      isResetting = false;
+      if(realBtnWrap) realBtnWrap.style.pointerEvents = 'auto';
+    }, 2800);
   };
 
   const startDrag = (clientX) => {
+    if(isResetting) return;
     isDragging = true;
     startX = clientX;
     handle.style.transition = 'none';
+    if(slideText) slideText.style.transition = 'none';
+    if(realBtnWrap) realBtnWrap.style.pointerEvents = 'none';
   };
 
   const onDrag = (clientX) => {
@@ -848,7 +861,7 @@ document.getElementById('logout-btn').addEventListener('click', async () => {
     const max = getMaxDrag();
     const delta = clientX - startX;
     currentX = Math.max(0, Math.min(max, delta));
-    handle.style.transform = 'translateX(' + currentX + 'px)';
+    handle.style.transform = `translateX(${currentX}px)`;
     updateSlideProgress(currentX, max);
   };
 
@@ -857,12 +870,13 @@ document.getElementById('logout-btn').addEventListener('click', async () => {
     isDragging = false;
     const max = getMaxDrag();
     const delta = clientX - startX;
-    if(delta > max * 0.4 || delta > 40){
-      slideToEndAndReset();
+    if(delta > max * 0.35 || delta > 40){
+      slideToEndAndTrigger();
     } else {
       handle.style.transition = 'transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1)';
       handle.style.transform = 'translateX(0px)';
-      if(slideText) slideText.style.opacity = '0.92';
+      resetSlideText();
+      if(realBtnWrap) realBtnWrap.style.pointerEvents = 'auto';
     }
   };
 
@@ -889,13 +903,17 @@ document.getElementById('logout-btn').addEventListener('click', async () => {
     if(isDragging && e.changedTouches.length === 1) endDrag(e.changedTouches[0].clientX);
   });
 
-  // Tap or click on pill track
+  // Tap on the track or pill
   pill.addEventListener('click', (e) => {
-    slideToEndAndReset();
+    if(isDragging) return;
+    slideToEndAndTrigger();
   });
 
+  // Tap on realBtnWrap
   if(realBtnWrap){
-    realBtnWrap.addEventListener('click', slideToEndAndReset);
+    realBtnWrap.addEventListener('click', () => {
+      if(!isDragging) slideToEndAndTrigger();
+    });
   }
 })();
 
