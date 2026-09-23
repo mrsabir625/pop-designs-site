@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Panel | Spin World Ceiling System</title>
-<link rel="icon" type="image/jpeg" href="/images/logo.jpg">
+<link rel="icon" type="image/jpeg" href="../images/logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -57,69 +57,82 @@
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:26px;
+    gap:20px;
     text-align:center;
-    padding:24px;
+    padding:20px 16px;
     position:relative;
   }
   .login-card{
     background:rgba(255,255,255,0.03);
     border:1px solid rgba(255,255,255,0.14);
     border-radius:24px;
-    padding:44px 36px;
-    max-width:480px;
+    padding:38px 24px;
+    max-width:420px;
     width:100%;
     backdrop-filter:blur(24px) saturate(180%);
     -webkit-backdrop-filter:blur(24px) saturate(180%);
-    box-shadow:0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(255,255,255,0.03);
+    box-shadow:0 20px 50px rgba(0,0,0,0.55), 0 0 30px rgba(255,255,255,0.03);
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:20px;
+    gap:18px;
   }
   .login-brand-logo{
-    width:56px;
-    height:56px;
+    width:64px;
+    height:64px;
     border-radius:50%;
-    border:1px solid rgba(255,255,255,0.2);
+    border:2px solid rgba(255,255,255,0.22);
     object-fit:cover;
-    box-shadow:0 4px 18px rgba(0,0,0,0.4);
+    box-shadow:0 8px 24px rgba(0,0,0,0.5);
+    background:rgba(255,255,255,0.05);
   }
   .login-card h1{
-    font-size:2rem;
+    font-size:1.85rem;
     color:var(--gold-bright);
     letter-spacing:-0.02em;
+    margin-bottom:6px;
   }
-  .login-card p{
+  .login-card p.desc{
     color:var(--ivory);
     opacity:0.82;
-    font-size:0.92rem;
+    font-size:0.9rem;
     line-height:1.5;
-    max-width:34ch;
+    max-width:32ch;
+    margin:0 auto;
   }
   #error-msg{
     color:var(--danger);
-    font-size:0.86rem;
+    font-size:0.85rem;
     background:rgba(239,68,68,0.12);
     border:1px solid rgba(239,68,68,0.3);
     border-radius:8px;
     padding:8px 14px;
     display:none;
+    max-width:340px;
+  }
+  .origin-note{
+    font-size:0.75rem;
+    color:var(--ivory);
+    opacity:0.55;
+    max-width:34ch;
+    margin-top:6px;
+    line-height:1.4;
   }
 
-  /* ---------- LUXURY SLIDE MECHANISM (Matches Website Exactly) ---------- */
+  /* ---------- LUXURY SLIDE MECHANISM (Website Parity & Responsive) ---------- */
   .slide-container{
     position:relative;
     width:100%;
-    max-width:380px;
-    margin:10px auto 0;
+    max-width:330px;
+    margin:10px auto 4px;
   }
   .slide-track{
     width:100%;
+    height:56px;
     background:rgba(255,255,255,0.04);
     border:1px solid rgba(255,255,255,0.18);
     border-radius:60px;
-    padding:6px;
+    padding:4px;
     backdrop-filter:blur(20px) saturate(160%);
     -webkit-backdrop-filter:blur(20px) saturate(160%);
     box-shadow:0 14px 40px rgba(0,0,0,0.4), 0 0 20px rgba(255,255,255,0.05);
@@ -129,13 +142,12 @@
   }
   .slide-pill{
     position:relative;
-    height:56px;
+    height:100%;
     width:100%;
     border-radius:50px;
     overflow:hidden;
     display:flex;
     align-items:center;
-    justify-content:center;
     background:rgba(255,255,255,0.02);
     cursor:pointer;
     transition:background .25s ease;
@@ -145,13 +157,14 @@
   }
   .slide-handle{
     position:absolute;
-    left:4px;
-    top:4px;
-    bottom:4px;
-    width:52px;
+    left:3px;
+    top:3px;
+    bottom:3px;
+    width:44px;
+    height:42px;
     border-radius:50px;
     background:linear-gradient(135deg, #FFFFFF 0%, #CBD5E1 100%);
-    box-shadow:0 4px 20px rgba(255,255,255,0.3);
+    box-shadow:0 4px 18px rgba(255,255,255,0.35);
     display:flex;
     align-items:center;
     justify-content:center;
@@ -163,36 +176,42 @@
   }
   .slide-handle:active{ cursor:grabbing; }
   .slide-handle svg{
-    width:20px;
-    height:20px;
+    width:18px;
+    height:18px;
     stroke:var(--charcoal);
+    stroke-width:2.5;
     transition:transform .35s ease;
   }
   .slide-handle.switched svg{ transform:rotate(180deg); }
   .slide-text{
-    font-size:0.9rem;
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding-left:46px; /* Offset so handle never covers text! */
+    padding-right:12px;
+    font-size:0.86rem;
     font-weight:500;
     letter-spacing:0.04em;
     color:var(--offwhite);
     opacity:0.92;
-    z-index:2;
     pointer-events:none;
-    display:flex;
-    align-items:center;
-    gap:8px;
+    white-space:nowrap;
     transition:opacity .25s ease, transform .25s ease;
+    z-index:2;
   }
   .slide-real-btn{
     position:absolute;
     inset:0;
     opacity:0.001;
-    z-index:10;
+    z-index:5;
     overflow:hidden;
     border-radius:60px;
     cursor:pointer;
   }
   .slide-real-btn > div{
-    transform:scale(3.4);
+    transform:scale(3.2);
     transform-origin:center center;
     width:100%;
     height:100%;
@@ -212,7 +231,7 @@
     margin-bottom:32px;
     flex-wrap:wrap;
     gap:16px;
-    padding:18px 24px;
+    padding:16px 22px;
     background:rgba(9,10,15,0.7);
     backdrop-filter:blur(20px) saturate(180%);
     -webkit-backdrop-filter:blur(20px) saturate(180%);
@@ -227,12 +246,13 @@
   }
   .brand-group img{
     height:36px;
-    width:auto;
+    width:36px;
     border-radius:50%;
-    border:1px solid rgba(255,255,255,0.18);
+    border:1px solid rgba(255,255,255,0.2);
+    object-fit:cover;
   }
   .brand-group h1{
-    font-size:1.45rem;
+    font-size:1.4rem;
     color:var(--gold-bright);
   }
   .brand-group span{
@@ -541,7 +561,7 @@
   }
 
   @media(max-width:640px){
-    .login-card{ padding:32px 20px; }
+    .login-card{ padding:32px 18px; }
     .top-bar{ padding:14px 18px; }
     .brand-group h1{ font-size:1.2rem; }
     section{ padding:18px 14px; }
@@ -554,10 +574,10 @@
 <!-- ================= LOGIN SCREEN ================= -->
 <div id="login-screen">
   <div class="login-card">
-    <img src="/images/logo.jpg" alt="Logo" class="login-brand-logo">
+    <img src="../images/logo.jpg" onerror="this.onerror=null; this.src='/images/logo.jpg';" alt="Spin World Logo" class="login-brand-logo">
     <div>
       <h1>Admin Portal</h1>
-      <p>Only the site owner's Google account can access this management dashboard.</p>
+      <p class="desc">Only the site owner's Google account can access this management dashboard.</p>
     </div>
 
     <!-- Luxury Slide Mechanism matching Website -->
@@ -565,11 +585,11 @@
       <div class="slide-track" id="slide-track">
         <div class="slide-pill" id="slide-pill" role="button" aria-label="Slide or click to sign in">
           <div class="slide-handle" id="slide-handle">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </div>
-          <span class="slide-text" id="slide-text">Slide to Sign In with Google &rarr;</span>
+          <span class="slide-text" id="slide-text">Slide to Sign In &rarr;</span>
         </div>
       </div>
       <!-- Transparent Google Sign-In layer perfectly overlays the slider -->
@@ -577,6 +597,7 @@
     </div>
 
     <p id="error-msg"></p>
+    <p class="origin-note" id="origin-note" style="display:none;"></p>
   </div>
 </div>
 
@@ -584,7 +605,7 @@
 <div id="dashboard">
   <div class="top-bar">
     <div class="brand-group">
-      <img src="/images/logo.jpg" alt="Spin World Logo">
+      <img src="../images/logo.jpg" onerror="this.onerror=null; this.src='/images/logo.jpg';" alt="Spin World Logo">
       <h1>Spin World <span>| Admin</span></h1>
     </div>
     <button id="logout-btn">Sign Out</button>
@@ -734,14 +755,26 @@ async function handleCredentialResponse(response){
 }
 
 window.onload = function(){
-  google.accounts.id.initialize({
-    client_id: GOOGLE_CLIENT_ID,
-    callback: handleCredentialResponse
-  });
-  google.accounts.id.renderButton(
-    document.getElementById('g_id_signin'),
-    { theme: 'filled_black', size: 'large', shape: 'pill', width: 340 }
-  );
+  // Check if running on private LAN IP (like Live Server on mobile)
+  const host = window.location.hostname;
+  if(host && host !== 'localhost' && host !== '127.0.0.1' && !host.includes('spinworld') && !host.includes('vercel.app')){
+    const note = document.getElementById('origin-note');
+    if(note){
+      note.textContent = 'Note: Google Sign-In requires http://localhost:3000 or your configured domain in Google Cloud Console.';
+      note.style.display = 'block';
+    }
+  }
+
+  try {
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleCredentialResponse
+    });
+    google.accounts.id.renderButton(
+      document.getElementById('g_id_signin'),
+      { theme: 'filled_black', size: 'large', shape: 'pill', width: 320 }
+    );
+  } catch(e){}
 
   fetch('/api/auth/status')
     .then(r => r.json())
@@ -758,10 +791,9 @@ document.getElementById('logout-btn').addEventListener('click', async () => {
 });
 
 /* ============================================================
-   SLIDER INTERACTION (Website-identical animation & gesture)
+   SLIDER INTERACTION (Full Touch & Mouse Drag Engine)
    ============================================================ */
 (function initAdminSlider(){
-  const track = document.getElementById('slide-track');
   const pill = document.getElementById('slide-pill');
   const handle = document.getElementById('slide-handle');
   const slideText = document.getElementById('slide-text');
@@ -769,36 +801,101 @@ document.getElementById('logout-btn').addEventListener('click', async () => {
 
   if(!pill || !handle) return;
 
-  const getMaxDrag = () => Math.max(0, pill.clientWidth - handle.offsetWidth - 8);
+  let isDragging = false;
+  let startX = 0;
+  let currentX = 0;
 
-  const animateSlideRight = () => {
+  const getMaxDrag = () => Math.max(0, pill.clientWidth - handle.offsetWidth - 6);
+
+  const updateSlideProgress = (x, max) => {
+    if(!slideText) return;
+    const ratio = Math.max(0, Math.min(1, x / max));
+    slideText.style.opacity = (1 - ratio * 1.1).toFixed(2);
+  };
+
+  const triggerSignIn = () => {
+    try {
+      google.accounts.id.prompt();
+    } catch(e){}
+    const iframeBtn = realBtnWrap?.querySelector('div[role="button"]') || realBtnWrap?.querySelector('iframe');
+    if(iframeBtn) iframeBtn.click();
+  };
+
+  const slideToEndAndReset = () => {
     const max = getMaxDrag();
-    handle.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
-    handle.style.transform = `translateX(${max}px)`;
+    handle.style.transition = 'transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    handle.style.transform = 'translateX(' + max + 'px)';
     if(slideText){
-      slideText.style.opacity = '0.2';
-      slideText.style.transform = 'translateX(10px)';
+      slideText.style.opacity = '0';
     }
+    triggerSignIn();
     setTimeout(() => {
       handle.style.transform = 'translateX(0px)';
       if(slideText){
         slideText.style.opacity = '0.92';
-        slideText.style.transform = 'translateX(0px)';
       }
-    }, 2800);
+    }, 2500);
   };
 
-  // Hover & interaction preview
-  pill.addEventListener('mouseenter', () => {
-    handle.style.transform = 'translateX(14px)';
+  const startDrag = (clientX) => {
+    isDragging = true;
+    startX = clientX;
+    handle.style.transition = 'none';
+  };
+
+  const onDrag = (clientX) => {
+    if(!isDragging) return;
+    const max = getMaxDrag();
+    const delta = clientX - startX;
+    currentX = Math.max(0, Math.min(max, delta));
+    handle.style.transform = 'translateX(' + currentX + 'px)';
+    updateSlideProgress(currentX, max);
+  };
+
+  const endDrag = (clientX) => {
+    if(!isDragging) return;
+    isDragging = false;
+    const max = getMaxDrag();
+    const delta = clientX - startX;
+    if(delta > max * 0.4 || delta > 40){
+      slideToEndAndReset();
+    } else {
+      handle.style.transition = 'transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1)';
+      handle.style.transform = 'translateX(0px)';
+      if(slideText) slideText.style.opacity = '0.92';
+    }
+  };
+
+  // Mouse drag
+  handle.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    startDrag(e.clientX);
   });
-  pill.addEventListener('mouseleave', () => {
-    handle.style.transform = 'translateX(0px)';
+  window.addEventListener('mousemove', (e) => {
+    if(isDragging) onDrag(e.clientX);
+  });
+  window.addEventListener('mouseup', (e) => {
+    if(isDragging) endDrag(e.clientX);
+  });
+
+  // Touch drag
+  handle.addEventListener('touchstart', (e) => {
+    if(e.touches.length === 1) startDrag(e.touches[0].clientX);
+  }, {passive: true});
+  window.addEventListener('touchmove', (e) => {
+    if(isDragging && e.touches.length === 1) onDrag(e.touches[0].clientX);
+  }, {passive: true});
+  window.addEventListener('touchend', (e) => {
+    if(isDragging && e.changedTouches.length === 1) endDrag(e.changedTouches[0].clientX);
+  });
+
+  // Tap or click on pill track
+  pill.addEventListener('click', (e) => {
+    slideToEndAndReset();
   });
 
   if(realBtnWrap){
-    realBtnWrap.addEventListener('mousedown', animateSlideRight);
-    realBtnWrap.addEventListener('touchstart', animateSlideRight, {passive: true});
+    realBtnWrap.addEventListener('click', slideToEndAndReset);
   }
 })();
 
@@ -947,7 +1044,7 @@ document.getElementById('upload-btn').addEventListener('click', async () => {
       uploadStatus.textContent = data.error || 'Upload failed.';
       return;
     }
-    uploadStatus.textContent = `${data.uploaded} photo(s) uploaded successfully${data.failed ? `, ${data.failed} failed` : ''}.`;
+    uploadStatus.textContent = `${data.uploaded} photo(s) uploaded successfully${data.failed ? ', ' + data.failed + ' failed' : ''}.`;
     filesInput.value = '';
     loadCategoryPhotos();
   } catch(err){
@@ -960,7 +1057,7 @@ async function loadCategoryPhotos(){
   const grid = document.getElementById('photo-grid-admin');
   grid.innerHTML = '<p class="empty">Loading photos...</p>';
   try{
-    const res = await fetch(`/api/admin/photos/${category}`);
+    const res = await fetch('/api/admin/photos/' + category);
     const photos = await res.json();
     if(!photos.length){
       grid.innerHTML = '<p class="empty">No uploaded photos in this category yet.</p>';
@@ -979,7 +1076,7 @@ async function loadCategoryPhotos(){
 
 async function deletePhoto(id){
   if(!confirm('Delete this photo? This cannot be undone.')) return;
-  await fetch(`/api/admin/photos/${id}`, { method: 'DELETE' });
+  await fetch('/api/admin/photos/' + id, { method: 'DELETE' });
   loadCategoryPhotos();
 }
 </script>
