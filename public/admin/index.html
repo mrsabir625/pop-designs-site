@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel | Spin World Ceiling System</title>
+<link rel="icon" type="image/jpeg" href="/images/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+  :root{
+    --ivory: #D5D0C8;
+    --charcoal: #090A0F;
+    --brass: #E2E8F0;
+    --brass-glow: rgba(255,255,255,0.22);
+    --gold-bright: #FFFFFF;
+    --plum: #0F1117;
+    --offwhite: #F8FAFC;
+    --line: rgba(255,255,255,0.12);
+    --danger: #EF4444;
+    --safe: #10B981;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--charcoal);
+    color:var(--offwhite);
+    font-family:'Work Sans',sans-serif;
+    font-weight:400;
+    min-height:100vh;
+    position:relative;
+    overflow-x:hidden;
+  }
+  /* Architectural luxury cove lighting aura matching main website */
+  body::before{
+    content:'';
+    position:fixed; inset:0; z-index:-1;
+    background:
+      radial-gradient(ellipse 90% 55% at 50% 18%, rgba(255,255,255,0.06), transparent 70%),
+      radial-gradient(ellipse 70% 50% at 50% 80%, rgba(255,255,255,0.03), transparent 65%),
+      var(--charcoal);
+  }
+  h1,h2,h3{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  a{color:inherit;text-decoration:none;}
+  ::selection{background:#F1F5F9;color:var(--charcoal);}
+
+  /* ---------- LOGIN SCREEN ---------- */
+  #login-screen{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:26px;
+    text-align:center;
+    padding:24px;
+    position:relative;
+  }
+  .login-card{
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:24px;
+    padding:44px 36px;
+    max-width:480px;
+    width:100%;
+    backdrop-filter:blur(24px) saturate(180%);
+    -webkit-backdrop-filter:blur(24px) saturate(180%);
+    box-shadow:0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(255,255,255,0.03);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:20px;
+  }
+  .login-brand-logo{
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.2);
+    object-fit:cover;
+    box-shadow:0 4px 18px rgba(0,0,0,0.4);
+  }
+  .login-card h1{
+    font-size:2rem;
+    color:var(--gold-bright);
+    letter-spacing:-0.02em;
+  }
+  .login-card p{
+    color:var(--ivory);
+    opacity:0.82;
+    font-size:0.92rem;
+    line-height:1.5;
+    max-width:34ch;
+  }
+  #error-msg{
+    color:var(--danger);
+    font-size:0.86rem;
+    background:rgba(239,68,68,0.12);
+    border:1px solid rgba(239,68,68,0.3);
+    border-radius:8px;
+    padding:8px 14px;
+    display:none;
+  }
+
+  /* ---------- LUXURY SLIDE MECHANISM (Matches Website Exactly) ---------- */
+  .slide-container{
+    position:relative;
+    width:100%;
+    max-width:380px;
+    margin:10px auto 0;
+  }
+  .slide-track{
+    width:100%;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.18);
+    border-radius:60px;
+    padding:6px;
+    backdrop-filter:blur(20px) saturate(160%);
+    -webkit-backdrop-filter:blur(20px) saturate(160%);
+    box-shadow:0 14px 40px rgba(0,0,0,0.4), 0 0 20px rgba(255,255,255,0.05);
+    position:relative;
+    user-select:none;
+    -webkit-user-select:none;
+  }
+  .slide-pill{
+    position:relative;
+    height:56px;
+    width:100%;
+    border-radius:50px;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,255,255,0.02);
+    cursor:pointer;
+    transition:background .25s ease;
+  }
+  .slide-pill:hover{
+    background:rgba(255,255,255,0.05);
+  }
+  .slide-handle{
+    position:absolute;
+    left:4px;
+    top:4px;
+    bottom:4px;
+    width:52px;
+    border-radius:50px;
+    background:linear-gradient(135deg, #FFFFFF 0%, #CBD5E1 100%);
+    box-shadow:0 4px 20px rgba(255,255,255,0.3);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--charcoal);
+    cursor:grab;
+    z-index:3;
+    transition:transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.3s;
+    touch-action:none;
+  }
+  .slide-handle:active{ cursor:grabbing; }
+  .slide-handle svg{
+    width:20px;
+    height:20px;
+    stroke:var(--charcoal);
+    transition:transform .35s ease;
+  }
+  .slide-handle.switched svg{ transform:rotate(180deg); }
+  .slide-text{
+    font-size:0.9rem;
+    font-weight:500;
+    letter-spacing:0.04em;
+    color:var(--offwhite);
+    opacity:0.92;
+    z-index:2;
+    pointer-events:none;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  .slide-real-btn{
+    position:absolute;
+    inset:0;
+    opacity:0.001;
+    z-index:10;
+    overflow:hidden;
+    border-radius:60px;
+    cursor:pointer;
+  }
+  .slide-real-btn > div{
+    transform:scale(3.4);
+    transform-origin:center center;
+    width:100%;
+    height:100%;
+  }
+
+  /* ---------- DASHBOARD ---------- */
+  #dashboard{
+    display:none;
+    max-width:1200px;
+    margin:0 auto;
+    padding:30px 5vw 80px;
+  }
+  .top-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:32px;
+    flex-wrap:wrap;
+    gap:16px;
+    padding:18px 24px;
+    background:rgba(9,10,15,0.7);
+    backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:18px;
+    box-shadow:0 12px 36px rgba(0,0,0,0.5);
+  }
+  .brand-group{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .brand-group img{
+    height:36px;
+    width:auto;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.18);
+  }
+  .brand-group h1{
+    font-size:1.45rem;
+    color:var(--gold-bright);
+  }
+  .brand-group span{
+    color:var(--brass);
+  }
+  #logout-btn{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.18);
+    color:var(--offwhite);
+    padding:9px 20px;
+    border-radius:40px;
+    cursor:pointer;
+    font-size:0.85rem;
+    font-weight:500;
+    letter-spacing:0.04em;
+    transition:all .25s ease;
+  }
+  #logout-btn:hover{
+    background:rgba(255,255,255,0.14);
+    border-color:#FFFFFF;
+    color:#FFFFFF;
+    transform:translateY(-1px);
+  }
+
+  /* Stat cards */
+  .stat-row{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+    gap:18px;
+    margin-bottom:34px;
+  }
+  .stat-card{
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.12);
+    backdrop-filter:blur(16px) saturate(160%);
+    -webkit-backdrop-filter:blur(16px) saturate(160%);
+    border-radius:14px;
+    padding:20px 24px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.35);
+    transition:border-color .3s ease, transform .3s ease, box-shadow .3s ease;
+  }
+  .stat-card:hover{
+    border-color:rgba(255,255,255,0.3);
+    transform:translateY(-3px);
+    box-shadow:0 12px 36px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.06);
+  }
+  .stat-card .num{
+    font-family:'Fraunces',serif;
+    font-size:2.2rem;
+    font-weight:600;
+    color:var(--gold-bright);
+    line-height:1.1;
+    margin-bottom:6px;
+    text-shadow:0 0 20px rgba(255,255,255,0.3);
+  }
+  .stat-card .label{
+    font-size:0.76rem;
+    color:var(--ivory);
+    opacity:0.8;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    font-weight:500;
+  }
+
+  /* Sections */
+  section{
+    background:rgba(255,255,255,0.02);
+    border:1px solid rgba(255,255,255,0.09);
+    border-radius:16px;
+    padding:26px;
+    margin-bottom:34px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.3);
+    backdrop-filter:blur(14px);
+  }
+  section h2{
+    font-size:1.25rem;
+    margin-bottom:18px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:12px;
+    color:var(--gold-bright);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  section h2 .badge{
+    font-family:'Work Sans',sans-serif;
+    font-size:0.75rem;
+    letter-spacing:0.08em;
+    color:var(--brass);
+    text-transform:uppercase;
+  }
+
+  /* Tables */
+  .table-wrap{
+    overflow-x:auto;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(9,10,15,0.4);
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:0.85rem;
+  }
+  th, td{
+    text-align:left;
+    padding:12px 16px;
+    border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  th{
+    color:var(--brass);
+    font-weight:600;
+    font-size:0.74rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    background:rgba(255,255,255,0.02);
+  }
+  tbody tr{
+    transition:background .2s ease;
+  }
+  tbody tr:hover{
+    background:rgba(255,255,255,0.04);
+  }
+
+  .btn{
+    border:none;
+    border-radius:20px;
+    padding:6px 14px;
+    font-size:0.78rem;
+    cursor:pointer;
+    font-weight:500;
+    transition:all .2s ease;
+    font-family:inherit;
+  }
+  .btn-block{
+    background:rgba(239, 68, 68, 0.18);
+    border:1px solid rgba(239, 68, 68, 0.4);
+    color:#FCA5A5;
+  }
+  .btn-block:hover{
+    background:#EF4444;
+    color:#FFFFFF;
+    border-color:#EF4444;
+  }
+  .btn-unblock{
+    background:rgba(16, 185, 129, 0.18);
+    border:1px solid rgba(16, 185, 129, 0.4);
+    color:#6EE7B7;
+  }
+  .btn-unblock:hover{
+    background:#10B981;
+    color:#090A0F;
+    border-color:#10B981;
+  }
+  .empty{
+    opacity:0.5;
+    font-size:0.85rem;
+    padding:20px;
+    text-align:center;
+  }
+  .refresh-note{
+    font-size:0.75rem;
+    color:var(--ivory);
+    opacity:0.6;
+    margin-top:10px;
+  }
+
+  .ip-clickable{
+    cursor:pointer;
+    color:var(--brass);
+    text-decoration:underline dotted;
+  }
+  .ip-highlight{
+    font-weight:700;
+    color:#FFFFFF;
+    background:rgba(255,255,255,0.08) !important;
+  }
+
+  /* Upload & category pills */
+  .category-pill-bar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:18px;
+  }
+  .cat-pill{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--offwhite);
+    padding:7px 16px;
+    border-radius:30px;
+    font-size:0.82rem;
+    cursor:pointer;
+    transition:all .2s ease;
+    font-family:inherit;
+  }
+  .cat-pill:hover{
+    background:rgba(255,255,255,0.09);
+    border-color:rgba(255,255,255,0.25);
+  }
+  .cat-pill.active{
+    background:linear-gradient(135deg, #FFFFFF 0%, #CBD5E1 100%);
+    color:var(--charcoal);
+    border-color:#FFFFFF;
+    font-weight:600;
+    box-shadow:0 4px 16px rgba(255,255,255,0.25);
+  }
+
+  .upload-box{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    align-items:center;
+    margin-bottom:18px;
+    padding:16px;
+    background:rgba(9,10,15,0.45);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px;
+  }
+  select, input[type="file"]{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--offwhite);
+    padding:9px 14px;
+    border-radius:10px;
+    font-size:0.85rem;
+    font-family:inherit;
+    outline:none;
+    transition:border-color .2s ease;
+  }
+  select:focus, input[type="file"]:focus{
+    border-color:var(--brass);
+  }
+  .btn-upload{
+    background:linear-gradient(135deg, #FFFFFF 0%, #CBD5E1 100%);
+    color:var(--charcoal);
+    font-weight:600;
+    padding:10px 22px;
+    border-radius:30px;
+    box-shadow:0 4px 16px rgba(255,255,255,0.2);
+    border:none;
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+  .btn-upload:hover{
+    box-shadow:0 6px 22px rgba(255,255,255,0.35);
+    transform:translateY(-1px);
+  }
+  .upload-status{
+    font-size:0.82rem;
+    color:var(--ivory);
+    opacity:0.85;
+    margin-bottom:16px;
+    min-height:1.2em;
+  }
+
+  /* Photo Grid */
+  .photo-grid-admin{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(115px, 1fr));
+    gap:12px;
+  }
+  .photo-thumb{
+    position:relative;
+    aspect-ratio:1;
+    border-radius:10px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,0.12);
+    background:rgba(255,255,255,0.02);
+    box-shadow:0 4px 16px rgba(0,0,0,0.3);
+    transition:transform .25s ease, border-color .25s ease;
+  }
+  .photo-thumb:hover{
+    transform:translateY(-2px);
+    border-color:rgba(255,255,255,0.3);
+  }
+  .photo-thumb img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .photo-thumb button{
+    position:absolute;
+    top:6px;
+    right:6px;
+    background:rgba(9,10,15,0.85);
+    border:1px solid rgba(239,68,68,0.5);
+    color:#EF4444;
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:1rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    backdrop-filter:blur(6px);
+    transition:all .2s ease;
+  }
+  .photo-thumb button:hover{
+    background:#EF4444;
+    color:#FFFFFF;
+    transform:scale(1.1);
+  }
+
+  @media(max-width:640px){
+    .login-card{ padding:32px 20px; }
+    .top-bar{ padding:14px 18px; }
+    .brand-group h1{ font-size:1.2rem; }
+    section{ padding:18px 14px; }
+    .upload-box{ flex-direction:column; align-items:stretch; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN SCREEN ================= -->
+<div id="login-screen">
+  <div class="login-card">
+    <img src="/images/logo.jpg" alt="Logo" class="login-brand-logo">
+    <div>
+      <h1>Admin Portal</h1>
+      <p>Only the site owner's Google account can access this management dashboard.</p>
+    </div>
+
+    <!-- Luxury Slide Mechanism matching Website -->
+    <div class="slide-container">
+      <div class="slide-track" id="slide-track">
+        <div class="slide-pill" id="slide-pill" role="button" aria-label="Slide or click to sign in">
+          <div class="slide-handle" id="slide-handle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </div>
+          <span class="slide-text" id="slide-text">Slide to Sign In with Google &rarr;</span>
+        </div>
+      </div>
+      <!-- Transparent Google Sign-In layer perfectly overlays the slider -->
+      <div class="slide-real-btn" id="g_id_signin"></div>
+    </div>
+
+    <p id="error-msg"></p>
+  </div>
+</div>
+
+<!-- ================= DASHBOARD ================= -->
+<div id="dashboard">
+  <div class="top-bar">
+    <div class="brand-group">
+      <img src="/images/logo.jpg" alt="Spin World Logo">
+      <h1>Spin World <span>| Admin</span></h1>
+    </div>
+    <button id="logout-btn">Sign Out</button>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="num" id="stat-total">0</div>
+      <div class="label">Visits Logged</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="stat-unique">0</div>
+      <div class="label">Unique IPs</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="stat-blocked">0</div>
+      <div class="label">Blocked IPs</div>
+    </div>
+  </div>
+
+  <!-- PHOTO UPLOAD & MANAGEMENT -->
+  <section>
+    <h2>
+      <span>Gallery Photos</span>
+      <span class="badge">MongoDB Storage</span>
+    </h2>
+
+    <!-- Category Pill Switcher matching website's pill styling -->
+    <div class="category-pill-bar" id="category-pills">
+      <button type="button" class="cat-pill active" data-cat="hall">Hall</button>
+      <button type="button" class="cat-pill" data-cat="bedroom">Bedroom</button>
+      <button type="button" class="cat-pill" data-cat="tv">TV Unit</button>
+      <button type="button" class="cat-pill" data-cat="balcony">Balcony</button>
+      <button type="button" class="cat-pill" data-cat="wall">Wall Panels</button>
+      <button type="button" class="cat-pill" data-cat="samples">Samples</button>
+    </div>
+
+    <div class="upload-box">
+      <select id="upload-category">
+        <option value="hall">Hall</option>
+        <option value="bedroom">Bedroom</option>
+        <option value="tv">TV Unit</option>
+        <option value="balcony">Balcony</option>
+        <option value="wall">Wall Panels</option>
+        <option value="samples">Samples</option>
+      </select>
+      <input type="file" id="upload-files" accept="image/*" multiple>
+      <button class="btn btn-upload" id="upload-btn">Upload Photos</button>
+    </div>
+    <p class="upload-status" id="upload-status"></p>
+    <div class="photo-grid-admin" id="photo-grid-admin"></div>
+  </section>
+
+  <!-- LIVE VISITORS -->
+  <section>
+    <h2>
+      <span>Live Visitors</span>
+      <span class="badge">Realtime Tracking</span>
+    </h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>IP Address</th>
+            <th>Device</th>
+            <th>Browser</th>
+            <th>OS</th>
+            <th>Page</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="visitors-body"></tbody>
+      </table>
+    </div>
+    <p class="refresh-note">Auto-refreshes every 5 seconds. Click any IP to highlight across updates.</p>
+    <div id="visitors-toggle-wrap" style="margin-top: 14px;"></div>
+  </section>
+
+  <!-- BLOCKED IPS -->
+  <section>
+    <h2>
+      <span>Blocked IPs</span>
+      <span class="badge">Firewall</span>
+    </h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>IP Address</th>
+            <th>Blocked At</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="blocked-body"></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<script>
+// Google Client ID for Admin Authentication
+const GOOGLE_CLIENT_ID = "156198707118-22002mfa9nlulgigk5di12u24rfoa39d.apps.googleusercontent.com";
+
+function showDashboard(){
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  loadData();
+  loadCategoryPhotos();
+  if(!window._adminInterval){
+    window._adminInterval = setInterval(loadData, 5000);
+  }
+}
+
+function showLogin(errorText){
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('dashboard').style.display = 'none';
+  if(window._adminInterval){
+    clearInterval(window._adminInterval);
+    window._adminInterval = null;
+  }
+  const err = document.getElementById('error-msg');
+  if(errorText){
+    err.textContent = errorText;
+    err.style.display = 'block';
+  } else {
+    err.style.display = 'none';
+  }
+}
+
+async function handleCredentialResponse(response){
+  try{
+    const res = await fetch('/api/auth/google', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ credential: response.credential })
+    });
+    const data = await res.json();
+    if(res.ok){
+      showDashboard();
+    } else {
+      showLogin(data.error || 'This Google account is not authorized to access this panel.');
+    }
+  } catch(err){
+    showLogin('Something went wrong. Please check connection and try again.');
+  }
+}
+
+window.onload = function(){
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: handleCredentialResponse
+  });
+  google.accounts.id.renderButton(
+    document.getElementById('g_id_signin'),
+    { theme: 'filled_black', size: 'large', shape: 'pill', width: 340 }
+  );
+
+  fetch('/api/auth/status')
+    .then(r => r.json())
+    .then(data => {
+      if(data.authenticated) showDashboard();
+      else showLogin();
+    })
+    .catch(() => showLogin());
+};
+
+document.getElementById('logout-btn').addEventListener('click', async () => {
+  await fetch('/api/auth/logout', { method: 'POST' });
+  showLogin();
+});
+
+/* ============================================================
+   SLIDER INTERACTION (Website-identical animation & gesture)
+   ============================================================ */
+(function initAdminSlider(){
+  const track = document.getElementById('slide-track');
+  const pill = document.getElementById('slide-pill');
+  const handle = document.getElementById('slide-handle');
+  const slideText = document.getElementById('slide-text');
+  const realBtnWrap = document.getElementById('g_id_signin');
+
+  if(!pill || !handle) return;
+
+  const getMaxDrag = () => Math.max(0, pill.clientWidth - handle.offsetWidth - 8);
+
+  const animateSlideRight = () => {
+    const max = getMaxDrag();
+    handle.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    handle.style.transform = `translateX(${max}px)`;
+    if(slideText){
+      slideText.style.opacity = '0.2';
+      slideText.style.transform = 'translateX(10px)';
+    }
+    setTimeout(() => {
+      handle.style.transform = 'translateX(0px)';
+      if(slideText){
+        slideText.style.opacity = '0.92';
+        slideText.style.transform = 'translateX(0px)';
+      }
+    }, 2800);
+  };
+
+  // Hover & interaction preview
+  pill.addEventListener('mouseenter', () => {
+    handle.style.transform = 'translateX(14px)';
+  });
+  pill.addEventListener('mouseleave', () => {
+    handle.style.transform = 'translateX(0px)';
+  });
+
+  if(realBtnWrap){
+    realBtnWrap.addEventListener('mousedown', animateSlideRight);
+    realBtnWrap.addEventListener('touchstart', animateSlideRight, {passive: true});
+  }
+})();
+
+/* ============================================================
+   VISITOR & BLOCKED IP DATA
+   ============================================================ */
+async function loadData(){
+  try{
+    const [visitorsRes, blockedRes] = await Promise.all([
+      fetch('/api/admin/visitors'),
+      fetch('/api/admin/blocked')
+    ]);
+    if(!visitorsRes.ok || !blockedRes.ok){
+      showLogin('Session expired, please sign in again.');
+      return;
+    }
+    const visitors = await visitorsRes.json();
+    const blocked = await blockedRes.json();
+    renderVisitors(visitors, blocked);
+    renderBlocked(blocked);
+
+    document.getElementById('stat-total').textContent = visitors.length;
+    document.getElementById('stat-unique').textContent = new Set(visitors.map(v => v.ip)).size;
+    document.getElementById('stat-blocked').textContent = blocked.length;
+  } catch(e){}
+}
+
+const PAGE_SIZE = 15;
+let visitorsShown = PAGE_SIZE;
+const highlightedIps = new Set();
+
+function renderVisitors(visitors, blocked){
+  const body = document.getElementById('visitors-body');
+  const toggleWrap = document.getElementById('visitors-toggle-wrap');
+  const blockedIps = new Set(blocked.map(b => b.ip));
+
+  if(!visitors.length){
+    body.innerHTML = '<tr><td colspan="7" class="empty">No visits logged yet.</td></tr>';
+    toggleWrap.innerHTML = '';
+    return;
+  }
+
+  const visible = visitors.slice(0, visitorsShown);
+  body.innerHTML = visible.map(v => `
+    <tr class="${highlightedIps.has(v.ip) ? 'ip-highlight' : ''}">
+      <td>${new Date(v.time).toLocaleString()}</td>
+      <td class="ip-clickable" onclick="toggleIpHighlight('${v.ip}')" title="Click to highlight IP">${v.ip}</td>
+      <td>${v.device} (${v.deviceType})</td>
+      <td>${v.browser}</td>
+      <td>${v.os}</td>
+      <td>${v.path}</td>
+      <td>${blockedIps.has(v.ip)
+        ? '<button class="btn btn-unblock" onclick="unblockIp(\'' + v.ip + '\')">Unblock</button>'
+        : '<button class="btn btn-block" onclick="blockIp(\'' + v.ip + '\')">Block</button>'}</td>
+    </tr>
+  `).join('');
+
+  const remaining = visitors.length - visitorsShown;
+  let btns = '';
+  if(remaining > 0){
+    btns += `<button class="btn btn-upload" style="padding:7px 18px;margin-right:8px;" onclick="showMoreVisitors()">Show More (${remaining} more)</button>`;
+  }
+  if(visitorsShown > PAGE_SIZE){
+    btns += `<button class="btn" style="background:none;border:1px solid var(--line);color:var(--offwhite);padding:7px 16px;" onclick="showLessVisitors()">Show Less</button>`;
+  }
+  toggleWrap.innerHTML = btns;
+}
+
+function showMoreVisitors(){ visitorsShown += PAGE_SIZE; loadData(); }
+function showLessVisitors(){ visitorsShown = PAGE_SIZE; loadData(); }
+
+function toggleIpHighlight(ip){
+  if(highlightedIps.has(ip)) highlightedIps.delete(ip);
+  else highlightedIps.add(ip);
+  loadData();
+}
+
+function renderBlocked(blocked){
+  const body = document.getElementById('blocked-body');
+  if(!blocked.length){
+    body.innerHTML = '<tr><td colspan="3" class="empty">No IPs blocked yet.</td></tr>';
+    return;
+  }
+  body.innerHTML = blocked.map(b => `
+    <tr>
+      <td>${b.ip}</td>
+      <td>${new Date(b.blockedAt).toLocaleString()}</td>
+      <td><button class="btn btn-unblock" onclick="unblockIp('${b.ip}')">Unblock</button></td>
+    </tr>
+  `).join('');
+}
+
+async function blockIp(ip){
+  await fetch('/api/admin/block', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ip}) });
+  loadData();
+}
+async function unblockIp(ip){
+  await fetch('/api/admin/unblock', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ip}) });
+  loadData();
+}
+
+/* ============================================================
+   PHOTO UPLOAD & CATEGORY SWITCHING
+   ============================================================ */
+const uploadCategorySelect = document.getElementById('upload-category');
+const uploadStatus = document.getElementById('upload-status');
+const categoryPillBar = document.getElementById('category-pills');
+
+// Keep Category Pills and Select in sync
+categoryPillBar.addEventListener('click', (e) => {
+  const pill = e.target.closest('.cat-pill');
+  if(!pill) return;
+  categoryPillBar.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  pill.classList.add('active');
+  const cat = pill.dataset.cat;
+  uploadCategorySelect.value = cat;
+  loadCategoryPhotos();
+});
+
+uploadCategorySelect.addEventListener('change', () => {
+  const cat = uploadCategorySelect.value;
+  categoryPillBar.querySelectorAll('.cat-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.cat === cat);
+  });
+  loadCategoryPhotos();
+});
+
+document.getElementById('upload-btn').addEventListener('click', async () => {
+  const category = uploadCategorySelect.value;
+  const filesInput = document.getElementById('upload-files');
+  const files = filesInput.files;
+  if(!files || !files.length){
+    uploadStatus.textContent = 'Pehle photos choose karo.';
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('category', category);
+  for(const f of files) formData.append('photos', f);
+
+  uploadStatus.textContent = `Uploading ${files.length} photo(s)...`;
+  try{
+    const res = await fetch('/api/admin/photos/upload', { method: 'POST', body: formData });
+    const data = await res.json();
+    if(!res.ok){
+      uploadStatus.textContent = data.error || 'Upload failed.';
+      return;
+    }
+    uploadStatus.textContent = `${data.uploaded} photo(s) uploaded successfully${data.failed ? `, ${data.failed} failed` : ''}.`;
+    filesInput.value = '';
+    loadCategoryPhotos();
+  } catch(err){
+    uploadStatus.textContent = 'Upload failed. Check your internet connection and try again.';
+  }
+});
+
+async function loadCategoryPhotos(){
+  const category = uploadCategorySelect.value;
+  const grid = document.getElementById('photo-grid-admin');
+  grid.innerHTML = '<p class="empty">Loading photos...</p>';
+  try{
+    const res = await fetch(`/api/admin/photos/${category}`);
+    const photos = await res.json();
+    if(!photos.length){
+      grid.innerHTML = '<p class="empty">No uploaded photos in this category yet.</p>';
+      return;
+    }
+    grid.innerHTML = photos.map(p => `
+      <div class="photo-thumb">
+        <img src="/api/photos/image/${p._id}" alt="" loading="lazy">
+        <button onclick="deletePhoto('${p._id}')" aria-label="Delete photo">&times;</button>
+      </div>
+    `).join('');
+  } catch(err){
+    grid.innerHTML = '<p class="empty">Could not load photos.</p>';
+  }
+}
+
+async function deletePhoto(id){
+  if(!confirm('Delete this photo? This cannot be undone.')) return;
+  await fetch(`/api/admin/photos/${id}`, { method: 'DELETE' });
+  loadCategoryPhotos();
+}
+</script>
+</body>
+</html>
