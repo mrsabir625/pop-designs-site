@@ -89,7 +89,7 @@
 
   /* ---------- NAV ---------- */
   header{
-    position:fixed; top:0; left:0; right:0; z-index:100;
+    position:fixed; top:0; left:0; right:0; z-index:1000;
     display:flex; justify-content:space-between; align-items:center;
     padding:18px 6vw;
     background:rgba(9,10,15,0.85);
@@ -101,6 +101,7 @@
     border-bottom-left-radius: 28px;
     border-bottom-right-radius: 28px;
     box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+    transition: background 0.3s ease, border-color 0.3s ease;
   }
   .brand{ display:flex; align-items:center; gap:10px; font-family:'Fraunces', serif; font-size:1.15rem; font-weight:600; letter-spacing:0.02em; }
   .brand span{color:var(--brass);}
@@ -112,6 +113,242 @@
   nav a::after{ content:''; position:absolute; left:0; bottom:-6px; width:0; height:1px; background:var(--brass); transition:width .3s ease; }
   nav a:hover::after{width:100%;}
   @media(max-width:700px){ nav ul{gap:16px;} nav a{font-size:0.7rem;} }
+
+  /* Smooth Hide for Brand & Nav when Dynamic Island is Active */
+  .brand, nav {
+    transition: opacity 0.34s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+  header.island-active .brand,
+  header.island-active nav {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: scale(0.92) translateY(-2px);
+  }
+
+  /* ---------- IPHONE DYNAMIC ISLAND / MINI CAPSULE ---------- */
+  .dynamic-island {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    pointer-events: none;
+    width: 100%;
+    max-width: 100%;
+    padding: 0 12px;
+    box-sizing: border-box;
+  }
+
+  .island-capsule {
+    display: flex;
+    align-items: center;
+    background: #000000;
+    color: #FFFFFF;
+    padding: 0;
+    height: 0;
+    width: 0;
+    opacity: 0;
+    border-radius: 9999px;
+    box-shadow:
+      0 18px 40px -4px rgba(0, 0, 0, 0.95),
+      0 0 0 1px rgba(255, 255, 255, 0.16),
+      inset 0 1px 1.5px rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(28px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    overflow: hidden;
+    cursor: pointer;
+    pointer-events: none;
+    transform: scale(0.6);
+    transform-origin: center center;
+    transition:
+      width 0.45s cubic-bezier(0.34, 1.45, 0.64, 1),
+      height 0.45s cubic-bezier(0.34, 1.45, 0.64, 1),
+      transform 0.45s cubic-bezier(0.34, 1.45, 0.64, 1),
+      opacity 0.2s ease,
+      padding 0.3s ease;
+    will-change: width, height, transform, opacity;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  header.island-active .island-capsule {
+    opacity: 1;
+    pointer-events: auto;
+    height: 48px;
+    width: min(390px, calc(100vw - 32px));
+    transform: scale(1);
+    padding: 0 14px;
+  }
+
+  .island-inner {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    opacity: 0;
+    transform: scale(0.94);
+    transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1) 0.1s,
+                transform 0.22s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+  }
+
+  header.island-active .island-inner {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .island-leading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .island-leading img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+  }
+
+  .island-leading svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+
+  .island-leading.leading-whatsapp {
+    background: #25D366;
+    color: #FFFFFF;
+    box-shadow: 0 0 14px rgba(37, 211, 102, 0.5);
+  }
+
+  .island-leading.leading-warning {
+    background: #F59E0B;
+    color: #000000;
+    box-shadow: 0 0 14px rgba(245, 158, 11, 0.5);
+  }
+
+  .island-leading.leading-success {
+    background: #10B981;
+    color: #FFFFFF;
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.5);
+  }
+
+  .island-leading.leading-gold {
+    background: linear-gradient(135deg, #FDE68A, #D97706);
+    color: #000000;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.45);
+  }
+
+  .island-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    margin: 0 10px;
+    text-align: left;
+  }
+
+  .island-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #FFFFFF;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  .island-subtitle {
+    font-size: 0.70rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.72);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+    margin-top: 1px;
+  }
+
+  .island-trailing {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .island-badge {
+    background: rgba(255, 255, 255, 0.16);
+    color: #FFFFFF;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    letter-spacing: 0.02em;
+  }
+
+  .island-badge.badge-green {
+    background: rgba(37, 211, 102, 0.22);
+    color: #4ADE80;
+    border: 1px solid rgba(74, 222, 128, 0.35);
+  }
+
+  .island-pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 8px #10B981;
+    animation: islandPulse 1.4s ease-in-out infinite alternate;
+  }
+
+  .island-pulse-dot.pulse-amber {
+    background: #F59E0B;
+    box-shadow: 0 0 8px #F59E0B;
+  }
+
+  @keyframes islandPulse {
+    0% { transform: scale(0.85); opacity: 0.65; }
+    100% { transform: scale(1.25); opacity: 1; }
+  }
+
+  @media (max-width: 600px) {
+    header.island-active .island-capsule {
+      height: 44px;
+      width: calc(100vw - 24px);
+      padding: 0 10px;
+    }
+    .island-leading {
+      width: 28px;
+      height: 28px;
+    }
+    .island-leading svg {
+      width: 15px;
+      height: 15px;
+    }
+    .island-body {
+      margin: 0 8px;
+    }
+    .island-title {
+      font-size: 0.78rem;
+    }
+    .island-subtitle {
+      font-size: 0.67rem;
+    }
+  }
 
   /* ---------- HERO ---------- */
   .hero{ height:100svh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; position:relative; padding:0 6vw; overflow:hidden; }
@@ -585,11 +822,26 @@
 </head>
 <body>
 
-<header>
+<header id="main-header">
   <div class="brand">
     <img src="images/logo.png" alt="Sabir Contractor logo" draggable="false">
     <span class="brand-text">SABIR <span style="color:var(--brass)">CONTRACTOR</span></span>
   </div>
+
+  <!-- iPhone Dynamic Island / Mini Capsule -->
+  <div id="dynamic-island" class="dynamic-island" role="status" aria-live="polite">
+    <div class="island-capsule" id="island-capsule" title="Notification">
+      <div class="island-inner">
+        <div class="island-leading" id="island-leading"></div>
+        <div class="island-body" id="island-body">
+          <span class="island-title" id="island-title"></span>
+          <span class="island-subtitle" id="island-subtitle"></span>
+        </div>
+        <div class="island-trailing" id="island-trailing"></div>
+      </div>
+    </div>
+  </div>
+
   <nav>
     <ul>
       <li><a href="#gallery">Gallery</a></li>
@@ -825,6 +1077,155 @@
    ============================================================ */
 const WHATSAPP_NUMBER = "919158208949"; // Sabir Contractor (Primary)
 const OPTIONAL_PHONE = "917800679496";  // Optional Phone Number
+
+/* ============================================================
+   IPHONE 18 DYNAMIC ISLAND (MINI CAPSULE) ENGINE
+   - Authentic Apple fluid spring physics & bouncy rubber-band curves
+   - Seamlessly morphs in place of Logo and Nav links
+   - Multi-event triggers: WhatsApp sends, Shortlist picks, Offline/Online
+   - Interactive tap actions (tap to view shortlist)
+   ============================================================ */
+const DynamicIsland = (function() {
+  const header = document.getElementById('main-header') || document.querySelector('header');
+  const capsule = document.getElementById('island-capsule');
+  const leadingEl = document.getElementById('island-leading');
+  const titleEl = document.getElementById('island-title');
+  const subtitleEl = document.getElementById('island-subtitle');
+  const trailingEl = document.getElementById('island-trailing');
+
+  let dismissTimer = null;
+  let currentAction = null;
+
+  const ICONS = {
+    whatsapp: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M9.16 7.42C9 7.42 8.78 7.43 8.58 7.82C8.38 8.21 7.82 8.74 7.82 9.82C7.82 10.9 8.61 11.93 8.72 12.08C8.83 12.23 10.24 14.4 12.44 15.35C14.26 16.14 14.64 15.98 15.03 15.94C15.42 15.91 16.31 15.42 16.49 14.9C16.68 14.39 16.68 13.95 16.62 13.86C16.56 13.77 16.41 13.72 16.18 13.6C15.95 13.49 14.81 12.93 14.6 12.85C14.39 12.77 14.24 12.73 14.09 12.96C13.94 13.19 13.51 13.7 13.38 13.85C13.25 14 13.12 14.02 12.89 13.91C12.66 13.8 11.69 13.48 10.55 12.46C9.66 11.67 9.06 10.69 8.95 10.5C8.84 10.31 8.94 10.2 9.05 10.09C9.15 9.99 9.28 9.82 9.4 9.68C9.52 9.54 9.56 9.43 9.64 9.28C9.72 9.13 9.68 9 9.62 8.89C9.56 8.78 9.16 7.82 9.16 7.42Z"/></svg>`,
+    star: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>`,
+    minus: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
+    check: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+    offline: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path><path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>`,
+    online: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>`,
+    estimate: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`
+  };
+
+  function show({
+    icon = 'whatsapp',
+    thumb = null,
+    title = '',
+    subtitle = '',
+    trailing = null,
+    type = 'default',
+    duration = 2400,
+    onClick = null
+  } = {}) {
+    if (!header || !capsule) return;
+
+    if (dismissTimer) {
+      clearTimeout(dismissTimer);
+      dismissTimer = null;
+    }
+
+    // Set Leading
+    leadingEl.className = 'island-leading';
+    if (thumb) {
+      leadingEl.innerHTML = `<img src="${thumb}" alt="Thumbnail" draggable="false">`;
+    } else if (icon === 'whatsapp') {
+      leadingEl.classList.add('leading-whatsapp');
+      leadingEl.innerHTML = ICONS.whatsapp;
+    } else if (icon === 'offline') {
+      leadingEl.classList.add('leading-warning');
+      leadingEl.innerHTML = ICONS.offline;
+    } else if (icon === 'online') {
+      leadingEl.classList.add('leading-success');
+      leadingEl.innerHTML = ICONS.online;
+    } else if (icon === 'star') {
+      leadingEl.classList.add('leading-gold');
+      leadingEl.innerHTML = ICONS.star;
+    } else if (icon === 'estimate') {
+      leadingEl.classList.add('leading-gold');
+      leadingEl.innerHTML = ICONS.estimate;
+    } else if (icon === 'minus') {
+      leadingEl.classList.add('leading-warning');
+      leadingEl.innerHTML = ICONS.minus;
+    } else {
+      leadingEl.innerHTML = ICONS.check;
+    }
+
+    // Set Copy
+    titleEl.textContent = title;
+    subtitleEl.textContent = subtitle;
+
+    // Set Trailing
+    if (trailing === 'pulse') {
+      trailingEl.innerHTML = `<div class="island-pulse-dot ${type === 'warning' ? 'pulse-amber' : ''}"></div>`;
+    } else if (trailing) {
+      trailingEl.innerHTML = `<span class="island-badge ${type === 'whatsapp' ? 'badge-green' : ''}">${trailing}</span>`;
+    } else {
+      trailingEl.innerHTML = `<div class="island-pulse-dot"></div>`;
+    }
+
+    currentAction = onClick;
+
+    // Mobile tactile feedback
+    try {
+      if (navigator.vibrate) navigator.vibrate([16, 28, 14]);
+    } catch(e) {}
+
+    // Morph header
+    header.classList.add('island-active');
+
+    if (duration > 0) {
+      dismissTimer = setTimeout(() => {
+        hide();
+      }, duration);
+    }
+  }
+
+  function hide() {
+    if (!header) return;
+    if (dismissTimer) {
+      clearTimeout(dismissTimer);
+      dismissTimer = null;
+    }
+    header.classList.remove('island-active');
+    currentAction = null;
+  }
+
+  if (capsule) {
+    capsule.addEventListener('click', () => {
+      if (typeof currentAction === 'function') {
+        currentAction();
+      }
+      hide();
+    });
+  }
+
+  // Automated network listener
+  window.addEventListener('offline', () => {
+    show({
+      icon: 'offline',
+      title: 'No Internet Connection',
+      subtitle: 'Showing saved designs offline',
+      trailing: 'pulse',
+      type: 'warning',
+      duration: 3200
+    });
+  });
+
+  window.addEventListener('online', () => {
+    show({
+      icon: 'online',
+      title: 'Back Online',
+      subtitle: 'Connection restored successfully',
+      trailing: 'Active',
+      type: 'success',
+      duration: 2200
+    });
+  });
+
+  return {
+    show,
+    hide
+  };
+})();
 
 // Category Groups:
 // 1. Ceiling designs: Bed, Hall, Tv unit
@@ -1184,13 +1585,34 @@ function buildPhotoGrid(cat, container){
   const isSelected = card.classList.toggle('selected');
   card.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
   if(isSelected){
+    const thumbSrc = card.querySelector('img')?.getAttribute('src') || '';
     selected.set(key, {
       category: card.dataset.category,
       index: card.dataset.index,
-      src: card.querySelector('img')?.getAttribute('src') || ''
+      src: thumbSrc
+    });
+    DynamicIsland.show({
+      thumb: thumbSrc,
+      icon: 'star',
+      title: 'Added to Shortlist',
+      subtitle: `${card.dataset.category} #${card.dataset.index} • ${selected.size} total`,
+      trailing: `[${selected.size}]`,
+      duration: 2400,
+      onClick: openSelectedPanel
     });
   }
-  else{ selected.delete(key); }
+  else{
+    selected.delete(key);
+    DynamicIsland.show({
+      icon: 'minus',
+      title: 'Removed from Shortlist',
+      subtitle: `${card.dataset.category} #${card.dataset.index} • ${selected.size} remaining`,
+      trailing: selected.size > 0 ? `[${selected.size}]` : null,
+      type: 'warning',
+      duration: 2000,
+      onClick: openSelectedPanel
+    });
+  }
   updateTray();
 }
 function updateTray(){
@@ -1265,15 +1687,38 @@ function buildWhatsAppMessage(){
 }
 document.getElementById('tray-send').addEventListener('click', () => {
   const msg = encodeURIComponent(buildWhatsAppMessage());
+  DynamicIsland.show({
+    icon: 'whatsapp',
+    title: 'WhatsApp Connected',
+    subtitle: `Sending shortlist of ${selected.size} designs...`,
+    trailing: 'Sent',
+    type: 'whatsapp',
+    duration: 3200
+  });
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
 });
 document.getElementById('tray-clear').addEventListener('click', () => {
   document.querySelectorAll('.photo-card.selected').forEach(c => { c.classList.remove('selected'); c.setAttribute('aria-pressed','false'); });
   selected.clear();
   updateTray();
+  DynamicIsland.show({
+    icon: 'minus',
+    title: 'Shortlist Cleared',
+    subtitle: 'All designs removed from shortlist',
+    trailing: '[0]',
+    duration: 2000
+  });
 });
 document.getElementById('direct-whatsapp').addEventListener('click', (e) => {
   e.preventDefault();
+  DynamicIsland.show({
+    icon: 'whatsapp',
+    title: 'Sabir Contractor',
+    subtitle: 'Opening direct WhatsApp consultation...',
+    trailing: 'WhatsApp',
+    type: 'whatsapp',
+    duration: 2800
+  });
   const msg = encodeURIComponent("Hi, I'm interested in a POP false ceiling design for my home. Can we discuss?");
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
 });
@@ -1393,6 +1838,14 @@ document.getElementById('enquiry-submit').addEventListener('click', () => {
     alert('Please enter your name and WhatsApp number.');
     return;
   }
+  DynamicIsland.show({
+    icon: 'estimate',
+    title: 'Estimate Prepared',
+    subtitle: `Sending estimate for ${name} to WhatsApp...`,
+    trailing: 'WhatsApp',
+    type: 'whatsapp',
+    duration: 3200
+  });
   const msg = encodeURIComponent(buildEnquiryMessage());
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
 });
