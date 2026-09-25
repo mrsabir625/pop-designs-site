@@ -45,8 +45,67 @@ const upload = multer({
   }
 });
 
+app.disable('x-powered-by');
+
+/* ============================================================
+   SECURITY BARRIER & FIREWALL HEADERS
+   - Clickjacking prevention (X-Frame-Options)
+   - MIME sniffing protection (X-Content-Type-Options)
+   - Cross-Site Scripting filter (X-XSS-Protection)
+   - Strict HTTPS transport (HSTS)
+   - Privacy-safe Referrer-Policy
+   - Disallow unauthorized sensor access (Permissions-Policy)
+   ============================================================ */
+app.use((req, res, next) => {
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  next();
+});
+
+/* ============================================================
+   SECURITY BARRIER: RATE LIMITER (Anti-Brute Force Shield)
+   ============================================================ */
+const rateLimitBuckets = new Map();
+function rateLimiter(limit, windowMs) {
+  return (req, res, next) => {
+    const rawIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || req.ip || 'unknown';
+    const clientIp = rawIp.split(',')[0].trim();
+    const key = `${clientIp}:${req.baseUrl || req.path}`;
+    const now = Date.now();
+
+    let record = rateLimitBuckets.get(key);
+    if (!record || now > record.resetTime) {
+      record = { count: 1, resetTime: now + windowMs };
+      rateLimitBuckets.set(key, record);
+    } else {
+      record.count++;
+    }
+
+    if (rateLimitBuckets.size > 2000) {
+      for (const [k, v] of rateLimitBuckets.entries()) {
+        if (now > v.resetTime) rateLimitBuckets.delete(k);
+      }
+    }
+
+    if (record.count > limit) {
+      return res.status(429).json({
+        error: 'Security Barrier: Rate limit exceeded. Please wait a moment.'
+      });
+    }
+    next();
+  };
+}
+
 app.use(express.json());
 app.use(cookieParser());
+
+// Apply rate limiting barrier to Auth endpoints (max 12 per min)
+app.use('/api/auth', rateLimiter(12, 60 * 1000));
+app.use('/api/admin', rateLimiter(60, 60 * 1000));
 
 /* ============================================================
    DATABASE CONNECTION (Non-Blocking Serverless Cache)
@@ -126,25 +185,25 @@ async function logVisitorData(req) {
 
 // Fast Middleware (Never blocks response)
 app.use(async (req, res, next) => {
-  if (req.path.startsWith('/admin') || req.path.startsWith('/api')) {
-    return next();
-  }
-
   try {
     await connectDB();
     const rawIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || req.ip || '';
     const clientIp = rawIp.split(',')[0].trim();
     const isBlocked = await BlockedIP.findOne({ ip: clientIp });
-    if (isBlocked) {
+    if (isBlocked && !req.path.startsWith('/api/admin')) {
       return res.status(403).send(`
-        <div style="font-family:sans-serif;text-align:center;padding:80px 20px;background:#111;color:#eee;">
-          <h2>Access Blocked</h2>
-          <p>You have been blocked from viewing this site.</p>
+        <div style="font-family:sans-serif;text-align:center;padding:80px 20px;background:#090A0F;color:#eee;">
+          <h2 style="color:#EF4444;">Access Blocked by Security Barrier</h2>
+          <p style="color:#D5D0C8;margin-top:10px;">Your IP address has been restricted from viewing this service.</p>
         </div>
-     `);
+      `);
     }
   } catch (e) {
     // agar DB check fail ho jaye, galti se kisi ko block mat karo
+  }
+
+  if (req.path.startsWith('/admin') || req.path.startsWith('/api')) {
+    return next();
   }
 
   const isPageView = req.path === '/' || req.path.endsWith('.html') || !path.extname(req.path);

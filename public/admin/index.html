@@ -688,6 +688,13 @@
       <div class="num" id="stat-blocked">0</div>
       <div class="label">Blocked IPs</div>
     </div>
+    <div class="stat-card">
+      <div class="num" style="color:var(--safe); font-size:1.45rem; display:flex; align-items:center; gap:6px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>Shield Active</span>
+      </div>
+      <div class="label">Barrier (Firewall + Rate Limit)</div>
+    </div>
   </div>
 
   <!-- PHOTO UPLOAD & MANAGEMENT -->
@@ -771,6 +778,13 @@
 </div>
 
 <script>
+// Security Barrier: Frame-busting protection against iframe phishing/clickjacking
+try {
+  if (window.top !== window.self) {
+    window.top.location = window.self.location;
+  }
+} catch(e) {}
+
 // Google Client ID for Admin Authentication
 const GOOGLE_CLIENT_ID = "156198707118-22002mfa9nlulgigk5di12u24rfoa39d.apps.googleusercontent.com";
 

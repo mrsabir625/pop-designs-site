@@ -545,6 +545,10 @@
     -webkit-backdrop-filter:blur(24px) saturate(160%);
     transform:translateY(100%); transition:transform .5s cubic-bezier(.2,.8,.2,1);
     display:flex; flex-direction:column;
+    padding-top: 76px;
+  }
+  @media(max-width:600px){
+    .overlay{ padding-top: 66px; }
   }
   .overlay.open{ transform:translateY(0); }
   .overlay-head{
@@ -1027,7 +1031,7 @@
   <div class="f-bottom">
     <div class="legal">Sitemap | Terms &amp; Privacy Policy</div>
     <div class="credit">Designed &amp; Developed by <a href="https://wa.me/919158208949" id="credit-link">Sabirrrr Ansari</a></div>
-    <div class="copyright">2026 ©spinworldsystem.in All Rights Reserved.</div>
+    <div class="copyright">2026 © <a href="https://sabirpopcontractor.in" style="color:inherit; text-decoration:none;">sabirpopcontractor.in</a> All Rights Reserved.</div>
   </div>
 </footer>
 
@@ -1227,6 +1231,80 @@ const DynamicIsland = (function() {
   };
 })();
 
+/* ============================================================
+   ANDROID NAVIGATION / BACK BUTTON GUARD ("3 Kone Wala Button")
+   - Handles the hardware back button / gesture back on mobile
+   - Closes modal layers in priority order (Lightbox -> Selected Panel -> Gallery Overlay)
+   - Double-tap back protection to prevent accidental exit from the site
+   ============================================================ */
+let isNavigatingInternally = false;
+let exitAllowedUntil = 0;
+
+function pushModalHistory(modalName) {
+  try {
+    history.pushState({ modal: modalName }, '');
+  } catch(e) {}
+}
+
+function popModalHistory() {
+  if (history.state && history.state.modal) {
+    isNavigatingInternally = true;
+    history.back();
+    setTimeout(() => { isNavigatingInternally = false; }, 120);
+  }
+}
+
+// Initialize root state
+try {
+  history.replaceState({ appState: 'home' }, '');
+  history.pushState({ appState: 'home' }, '');
+} catch(e) {}
+
+window.addEventListener('popstate', (e) => {
+  if (isNavigatingInternally) return;
+
+  const isLightboxOpen = typeof lightbox !== 'undefined' && lightbox.classList.contains('open');
+  const isSelectedPanelOpen = document.getElementById('selected-panel') && document.getElementById('selected-panel').classList.contains('open');
+  const isOverlayOpen = typeof overlay !== 'undefined' && overlay.classList.contains('open');
+
+  // 1. If Lightbox is open, back button closes it
+  if (isLightboxOpen) {
+    closeLightbox(true);
+    return;
+  }
+
+  // 2. If Selected Designs panel is open, back button closes it
+  if (isSelectedPanelOpen) {
+    closeSelectedPanel(true);
+    return;
+  }
+
+  // 3. If Category Gallery overlay is open, back button closes it
+  if (isOverlayOpen) {
+    closeOverlay(true);
+    return;
+  }
+
+  // 4. On Home Page: Guard against accidental exit
+  const now = Date.now();
+  if (now < exitAllowedUntil) {
+    // Second back press within 2 seconds — allow browser exit
+    history.back();
+  } else {
+    exitAllowedUntil = now + 2000;
+    try {
+      history.pushState({ appState: 'home' }, '');
+    } catch(err) {}
+
+    DynamicIsland.show({
+      icon: 'check',
+      title: 'Tap back again to exit',
+      subtitle: 'Press back once more to leave Sabir Contractor',
+      duration: 2000
+    });
+  }
+});
+
 // Category Groups:
 // 1. Ceiling designs: Bed, Hall, Tv unit
 // 2. Fluted Panels: Balcony, Wall, Samples
@@ -1281,14 +1359,16 @@ const lightboxImg = document.getElementById('lightbox-img');
 function openLightbox(src){
   lightboxImg.src = src;
   lightbox.classList.add('open');
+  if(typeof pushModalHistory === 'function') pushModalHistory('lightbox');
 }
-function closeLightbox(){
+function closeLightbox(fromPopstate = false){
   lightbox.classList.remove('open');
   setTimeout(() => { lightboxImg.src = ''; }, 300);
+  if(!fromPopstate && typeof popModalHistory === 'function') popModalHistory();
 }
-document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
-lightbox.addEventListener('click', (e) => { if(e.target === lightbox) closeLightbox(); });
-document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLightbox(); });
+document.getElementById('lightbox-close').addEventListener('click', () => closeLightbox(false));
+lightbox.addEventListener('click', (e) => { if(e.target === lightbox) closeLightbox(false); });
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLightbox(false); });
 
 /* ============================================================
    CATEGORY CARDS & SLIDE SWITCHER
@@ -1487,6 +1567,22 @@ async function openOverlay(cat){
   buildPhotoGrid(cat, overlayGrid);
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
+  if(typeof pushModalHistory === 'function') pushModalHistory('overlay');
+
+  // If designs are already selected, keep mini capsule visible on this photo selection screen!
+  if(selected.size > 0){
+    const lastEntry = Array.from(selected.values()).pop();
+    DynamicIsland.show({
+      thumb: lastEntry?.src || null,
+      icon: 'star',
+      title: 'Shortlisted Designs',
+      subtitle: `${selected.size} design${selected.size > 1 ? 's' : ''} in shortlist • Tap to view`,
+      trailing: `[${selected.size}]`,
+      duration: 0,
+      onClick: openSelectedPanel
+    });
+  }
+
   await appendUploadedPhotos(cat, overlayGrid);
 }
 
@@ -1532,12 +1628,15 @@ async function appendUploadedPhotos(cat, container){
     // agar upload wali photos load na ho paye, static photos to already dikh rahi hain — site kaam karti rahegi
   }
 }
-function closeOverlay(){
+function closeOverlay(fromPopstate = false){
   overlay.classList.remove('open');
   document.body.style.overflow = '';
+  if(!fromPopstate && typeof popModalHistory === 'function') popModalHistory();
+  // Dismiss persistent gallery capsule when leaving photo gallery
+  DynamicIsland.hide();
 }
-document.getElementById('overlay-close').addEventListener('click', closeOverlay);
-overlay.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeOverlay(); });
+document.getElementById('overlay-close').addEventListener('click', () => closeOverlay(false));
+overlay.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeOverlay(false); });
 
 function buildPhotoGrid(cat, container){
   const category = cat.label;
@@ -1580,10 +1679,12 @@ function buildPhotoGrid(cat, container){
     container.appendChild(card);
   }
 }
-  function toggleSelect(card){
+function toggleSelect(card){
   const key = card.dataset.key;
   const isSelected = card.classList.toggle('selected');
   card.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+  const isInsideGallery = typeof overlay !== 'undefined' && overlay.classList.contains('open');
+
   if(isSelected){
     const thumbSrc = card.querySelector('img')?.getAttribute('src') || '';
     selected.set(key, {
@@ -1594,24 +1695,35 @@ function buildPhotoGrid(cat, container){
     DynamicIsland.show({
       thumb: thumbSrc,
       icon: 'star',
-      title: 'Added to Shortlist',
-      subtitle: `${card.dataset.category} #${card.dataset.index} • ${selected.size} total`,
+      title: `${selected.size} Design${selected.size > 1 ? 's' : ''} Selected`,
+      subtitle: `${card.dataset.category} #${card.dataset.index} • Tap to view all`,
       trailing: `[${selected.size}]`,
-      duration: 2400,
+      duration: isInsideGallery ? 0 : 2400,
       onClick: openSelectedPanel
     });
   }
   else{
     selected.delete(key);
-    DynamicIsland.show({
-      icon: 'minus',
-      title: 'Removed from Shortlist',
-      subtitle: `${card.dataset.category} #${card.dataset.index} • ${selected.size} remaining`,
-      trailing: selected.size > 0 ? `[${selected.size}]` : null,
-      type: 'warning',
-      duration: 2000,
-      onClick: openSelectedPanel
-    });
+    if(selected.size > 0){
+      const lastEntry = Array.from(selected.values()).pop();
+      DynamicIsland.show({
+        thumb: lastEntry?.src || null,
+        icon: 'star',
+        title: `${selected.size} Design${selected.size > 1 ? 's' : ''} Selected`,
+        subtitle: `Removed ${card.dataset.category} #${card.dataset.index} • Tap to view`,
+        trailing: `[${selected.size}]`,
+        duration: isInsideGallery ? 0 : 2000,
+        onClick: openSelectedPanel
+      });
+    } else {
+      DynamicIsland.show({
+        icon: 'minus',
+        title: 'Shortlist Empty',
+        subtitle: `All designs deselected`,
+        type: 'warning',
+        duration: 1800
+      });
+    }
   }
   updateTray();
 }
@@ -1644,17 +1756,33 @@ function openSelectedPanel(){
   panel.classList.add('open');
   panel.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
+  if(typeof pushModalHistory === 'function') pushModalHistory('selected-panel');
 }
-function closeSelectedPanel(){
+function closeSelectedPanel(fromPopstate = false){
   const panel = document.getElementById('selected-panel');
   panel.classList.remove('open');
   panel.setAttribute('aria-hidden', 'true');
   if(!overlay.classList.contains('open')) document.body.style.overflow = '';
+  if(!fromPopstate && typeof popModalHistory === 'function') popModalHistory();
+
+  // If returning to gallery overlay and designs are selected, keep mini capsule visible!
+  if(typeof overlay !== 'undefined' && overlay.classList.contains('open') && selected.size > 0){
+    const lastEntry = Array.from(selected.values()).pop();
+    DynamicIsland.show({
+      thumb: lastEntry?.src || null,
+      icon: 'star',
+      title: `${selected.size} Design${selected.size > 1 ? 's' : ''} Selected`,
+      subtitle: `${selected.size} design${selected.size > 1 ? 's' : ''} in shortlist • Tap to view`,
+      trailing: `[${selected.size}]`,
+      duration: 0,
+      onClick: openSelectedPanel
+    });
+  }
 }
 async function locateSelectedDesign(key){
   const design = selected.get(key);
   if(!design) return;
-  closeSelectedPanel();
+  closeSelectedPanel(false);
   const category = CATEGORIES.find(cat => cat.label === design.category);
   if(!category) return;
   await openOverlay(category);
@@ -1667,12 +1795,12 @@ async function locateSelectedDesign(key){
   setTimeout(() => card.classList.remove('locate-highlight'), 1900);
 }
 document.getElementById('tray-count-button').addEventListener('click', openSelectedPanel);
-document.getElementById('selected-panel-close').addEventListener('click', closeSelectedPanel);
+document.getElementById('selected-panel-close').addEventListener('click', () => closeSelectedPanel(false));
 document.getElementById('selected-panel').addEventListener('click', (e) => {
-  if(e.target.id === 'selected-panel') closeSelectedPanel();
+  if(e.target.id === 'selected-panel') closeSelectedPanel(false);
 });
 document.addEventListener('keydown', (e) => {
-  if(e.key === 'Escape' && document.getElementById('selected-panel').classList.contains('open')) closeSelectedPanel();
+  if(e.key === 'Escape' && document.getElementById('selected-panel').classList.contains('open')) closeSelectedPanel(false);
 });
 function buildWhatsAppMessage(){
   const grouped = {};
@@ -2021,6 +2149,42 @@ document.getElementById('enquiry-submit').addEventListener('click', () => {
       requestAnimationFrame(animate);
     }, 450);
   }
+})();
+
+/* ============================================================
+   CLIENT SECURITY BARRIER & INTEGRITY SHIELD
+   - Anti-iframe framing / clickjacking protection
+   - Disable right click on design images
+   - Disable inspect shortcut keys
+   ============================================================ */
+(function initSecurityBarrier() {
+  try {
+    if (window.top !== window.self) {
+      window.top.location = window.self.location;
+    }
+  } catch(e) {}
+
+  document.addEventListener('contextmenu', (e) => {
+    if (e.target.tagName === 'IMG' || e.target.closest('.photo-card') || e.target.closest('.gallery-preview')) {
+      e.preventDefault();
+      DynamicIsland.show({
+        icon: 'check',
+        title: 'Protected Content',
+        subtitle: 'Designs & images are protected by copyright',
+        type: 'warning',
+        duration: 1800
+      });
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (
+      e.key === 'F12' ||
+      ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c'))
+    ) {
+      e.preventDefault();
+    }
+  });
 })();
 </script>
 </body>
