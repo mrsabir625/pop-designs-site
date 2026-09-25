@@ -53,7 +53,7 @@
     --credit:#b98cff;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth; overscroll-behavior-y:none;}
   body{
     background:var(--charcoal);
     color:var(--offwhite);
@@ -61,6 +61,7 @@
     font-weight:400;
     overflow-x:hidden;
     position:relative;
+    overscroll-behavior-y:none;
   }
   /* ---------- AMBIENT BACKGROUND (Top Tier-1 Architectural Luxury Cove Aura) ---------- */
   body::before{
@@ -543,14 +544,20 @@
     position:fixed; inset:0; background:rgba(9,10,15,0.75); z-index:500;
     backdrop-filter:blur(24px) saturate(160%);
     -webkit-backdrop-filter:blur(24px) saturate(160%);
-    transform:translateY(100%); transition:transform .5s cubic-bezier(.2,.8,.2,1);
+    transform:translateY(100%); transition:transform .5s cubic-bezier(.2,.8,.2,1), visibility .5s;
     display:flex; flex-direction:column;
     padding-top: 76px;
+    visibility:hidden;
+    pointer-events:none;
   }
   @media(max-width:600px){
     .overlay{ padding-top: 66px; }
   }
-  .overlay.open{ transform:translateY(0); }
+  .overlay.open{
+    transform:translateY(0);
+    visibility:visible;
+    pointer-events:auto;
+  }
   .overlay-head{
     display:flex; align-items:center; justify-content:space-between;
     padding:20px 6vw; border-bottom:1px solid rgba(255,255,255,0.1); flex-shrink:0;
@@ -600,9 +607,17 @@
     border:1px solid rgba(255,255,255,0.16);
     border-radius:50px; padding:12px 12px 12px 22px; display:flex; align-items:center; gap:16px;
     box-shadow:0 14px 40px rgba(0,0,0,0.4); z-index:600;
-    transition: transform .45s cubic-bezier(.2,.8,.2,1); max-width:92vw;
+    transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .3s ease, visibility .45s; max-width:92vw;
+    visibility:hidden;
+    pointer-events:none;
+    opacity:0;
   }
-  .tray.show{ transform:translateX(-50%) translateY(0); }
+  .tray.show{
+    transform:translateX(-50%) translateY(0);
+    visibility:visible;
+    pointer-events:auto;
+    opacity:1;
+  }
   .tray .count{ font-size:0.9rem; font-weight:500; white-space:nowrap; }
   .tray button.count{ border:none; background:none; color:var(--offwhite); padding:6px 0; cursor:pointer; font:inherit; text-align:left; }
   .tray .count b{ color:#FFFFFF; font-family:'Fraunces',serif; font-size:1.05rem; }
@@ -615,10 +630,16 @@
   .selected-panel{
     position:fixed; inset:0; z-index:700; background:rgba(9,10,15,0.85); color:var(--offwhite);
     backdrop-filter:blur(24px) saturate(160%); -webkit-backdrop-filter:blur(24px) saturate(160%);
-    transform:translateY(100%); transition:transform .45s cubic-bezier(.2,.8,.2,1);
+    transform:translateY(100%); transition:transform .45s cubic-bezier(.2,.8,.2,1), visibility .45s;
     display:flex; flex-direction:column;
+    visibility:hidden;
+    pointer-events:none;
   }
-  .selected-panel.open{ transform:translateY(0); }
+  .selected-panel.open{
+    transform:translateY(0);
+    visibility:visible;
+    pointer-events:auto;
+  }
   .selected-panel-head{
     display:flex; align-items:center; justify-content:space-between;
     padding:20px 6vw; border-bottom:1px solid rgba(255,255,255,0.1); flex-shrink:0;
@@ -1751,6 +1772,7 @@ function renderSelectedPanel(){
   });
 }
 function openSelectedPanel(){
+  if(!selected || selected.size === 0) return;
   renderSelectedPanel();
   const panel = document.getElementById('selected-panel');
   panel.classList.add('open');
