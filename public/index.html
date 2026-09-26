@@ -577,11 +577,13 @@
   .cat-card:hover .arrow svg{ transform:translateX(4px); }
 
   /* ---------- GALLERY OVERLAY ---------- */
-  /* ---------- GALLERY OVERLAY (GLASSMORPHISM & NEUMORPHISM REDESIGN) ---------- */
+  /* ---------- GALLERY OVERLAY (OFF-WHITE & BLACK GLASSMORPHISM + NEUMORPHISM) ---------- */
   .overlay{
-    position:fixed; inset:0; background:rgba(9,10,15,0.88); z-index:500;
-    backdrop-filter:blur(32px) saturate(180%);
-    -webkit-backdrop-filter:blur(32px) saturate(180%);
+    position:fixed; inset:0;
+    background:linear-gradient(135deg, #EEF2F6 0%, #DFE5ED 45%, #ECEFF4 100%);
+    z-index:500;
+    backdrop-filter:blur(36px) saturate(180%);
+    -webkit-backdrop-filter:blur(36px) saturate(180%);
     transform:translateY(100%); transition:transform .5s cubic-bezier(.2,.8,.2,1), visibility .5s;
     display:flex; flex-direction:column;
     padding-top: 76px;
@@ -598,41 +600,58 @@
     pointer-events:auto;
   }
 
-  /* Ambient Glassmorphic Glow Spheres */
-  .overlay-orb{
-    position:absolute; border-radius:50%; pointer-events:none; z-index:0; filter:blur(60px); opacity:0.35;
+  /* Ambient Glassmorphic Droplets & Blurred Black Spheres (Direct from Reference) */
+  .orb-dark-1{
+    position:absolute; width:380px; height:380px; border-radius:50%;
+    background:radial-gradient(circle, rgba(15,23,42,0.65) 0%, rgba(15,23,42,0) 70%);
+    top:6%; right:4%; filter:blur(42px); pointer-events:none; z-index:1;
+    animation:orbFloat1 20s ease-in-out infinite alternate;
   }
-  .orb-light{
-    width:360px; height:360px; background:radial-gradient(circle, rgba(255,255,255,0.18), transparent 70%);
-    top:12%; left:5%; animation:orbFloat1 18s ease-in-out infinite alternate;
+  .orb-dark-2{
+    position:absolute; width:440px; height:440px; border-radius:50%;
+    background:radial-gradient(circle, rgba(15,23,42,0.55) 0%, rgba(15,23,42,0) 70%);
+    bottom:10%; left:3%; filter:blur(48px); pointer-events:none; z-index:1;
+    animation:orbFloat2 24s ease-in-out infinite alternate;
   }
-  .orb-dark{
-    width:420px; height:420px; background:radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%);
-    bottom:15%; right:5%; animation:orbFloat2 22s ease-in-out infinite alternate;
+  .glass-bubble{
+    position:absolute; border-radius:50%; pointer-events:none; z-index:2;
+    background:radial-gradient(120% 120% at 30% 25%, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0.06) 100%);
+    border:1.5px solid rgba(255,255,255,0.95);
+    box-shadow:inset 0 4px 12px rgba(255,255,255,0.95), inset -3px -4px 8px rgba(15,23,42,0.08), 0 16px 36px rgba(15,23,42,0.12);
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
   }
-  @keyframes orbFloat1{ 0%{ transform:translate(0,0); } 100%{ transform:translate(30px, 40px); } }
-  @keyframes orbFloat2{ 0%{ transform:translate(0,0); } 100%{ transform:translate(-40px, -30px); } }
+  .bubble-1{ width:120px; height:120px; top:15%; left:3%; animation:bubbleSway 15s ease-in-out infinite alternate; }
+  .bubble-2{ width:96px; height:96px; bottom:20%; right:4%; animation:bubbleSway 18s ease-in-out infinite alternate-reverse; }
+  .bubble-3{ width:68px; height:68px; top:52%; right:7%; animation:bubbleSway 12s ease-in-out infinite alternate; }
+  @keyframes bubbleSway{
+    0%{ transform:translate(0, 0) rotate(0deg); }
+    50%{ transform:translate(18px, -24px) rotate(8deg); }
+    100%{ transform:translate(-14px, 20px) rotate(-6deg); }
+  }
+  @keyframes orbFloat1{ 0%{ transform:translate(0,0); } 100%{ transform:translate(-30px, 45px); } }
+  @keyframes orbFloat2{ 0%{ transform:translate(0,0); } 100%{ transform:translate(40px, -35px); } }
 
   .overlay-head{
     display:flex; align-items:center; justify-content:space-between;
-    padding:18px 6vw; border-bottom:1px solid rgba(255,255,255,0.12); flex-shrink:0;
-    background:rgba(255,255,255,0.03);
-    backdrop-filter:blur(20px) saturate(180%);
-    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    padding:16px 6vw; flex-shrink:0;
+    background:rgba(255,255,255,0.76);
+    backdrop-filter:blur(24px) saturate(190%);
+    -webkit-backdrop-filter:blur(24px) saturate(190%);
+    border-bottom:1.5px solid rgba(255,255,255,0.92);
     position:relative; z-index:10;
-    box-shadow:0 8px 30px rgba(0,0,0,0.3);
+    box-shadow:0 8px 30px rgba(15,23,42,0.06);
   }
-  .overlay-head h2{ font-size:clamp(1.6rem,3.8vw,2.4rem); color:#FFFFFF; font-family:'Fraunces', serif; letter-spacing:-0.02em; }
-  .overlay-head .sub{ font-size:0.8rem; color:var(--ivory); opacity:0.85; letter-spacing:0.12em; text-transform:uppercase; margin-top:3px; }
+  .overlay-head h2{ font-size:clamp(1.7rem,4vw,2.5rem); color:#090A0F; font-family:'Fraunces', serif; font-weight:700; letter-spacing:-0.02em; }
+  .overlay-head .sub{ font-size:0.8rem; color:#475569; font-weight:600; opacity:0.9; letter-spacing:0.12em; text-transform:uppercase; margin-top:3px; }
   .overlay-close{
-    width:44px; height:44px; border-radius:50%; border:1px solid rgba(255,255,255,0.18);
-    background:rgba(255,255,255,0.06); backdrop-filter:blur(12px);
-    color:var(--offwhite); font-size:1.3rem; cursor:pointer;
+    width:44px; height:44px; border-radius:50%; border:1.5px solid #FFFFFF;
+    background:rgba(255,255,255,0.85); backdrop-filter:blur(14px);
+    color:#090A0F; font-size:1.4rem; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
-    transition:all .25s ease;
-    box-shadow:0 4px 14px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
+    transition:all .25s cubic-bezier(.2,.8,.2,1);
+    box-shadow:0 4px 14px rgba(15,23,42,0.1), inset 0 1px 2px #FFFFFF;
   }
-  .overlay-close:hover{ background:rgba(255,255,255,0.18); transform:scale(1.05); color:#FFFFFF; }
+  .overlay-close:hover{ background:#090A0F; color:#FFFFFF; border-color:#090A0F; transform:scale(1.06); }
 
   .overlay-scroll{ flex:1; overflow-y:auto; padding:32px 6vw 140px; -webkit-overflow-scrolling:touch; position:relative; z-index:5; }
   .photo-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:24px; max-width:1300px; margin:0 auto; }
@@ -641,95 +660,116 @@
     .overlay-scroll{ padding:20px 4vw 140px; }
   }
 
-  /* High-End Glassmorphic Catalogue Card */
+  /* High-End Off-White & Black Glassmorphic Catalogue Card */
   .photo-card{
-    position:relative; aspect-ratio:16/10; border-radius:18px; overflow:hidden; cursor:pointer;
-    background:rgba(255,255,255,0.03);
-    border:1px solid rgba(255,255,255,0.15);
-    box-shadow:0 14px 34px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.15);
-    backdrop-filter:blur(12px);
-    transition:transform .35s cubic-bezier(.2,.8,.2,1), border-color .3s ease, box-shadow .35s ease;
+    position:relative; aspect-ratio:16/10; border-radius:26px; overflow:hidden; cursor:pointer;
+    background:rgba(255,255,255,0.72);
+    border:2px solid rgba(255,255,255,0.98);
+    box-shadow:
+      0 18px 45px rgba(15,23,42,0.12),
+      0 4px 12px rgba(15,23,42,0.05),
+      inset 0 2px 3px rgba(255,255,255,0.95),
+      inset 0 -1px 2px rgba(15,23,42,0.04);
+    backdrop-filter:blur(24px) saturate(190%);
+    -webkit-backdrop-filter:blur(24px) saturate(190%);
+    transition:all .35s cubic-bezier(.2,.8,.2,1);
+    display:flex; flex-direction:column;
+    padding:8px;
   }
   .photo-card:hover{
-    transform:translateY(-4px);
-    border-color:rgba(255,255,255,0.4);
-    box-shadow:0 20px 44px rgba(0,0,0,0.6), 0 0 24px rgba(255,255,255,0.08);
+    transform:translateY(-6px);
+    border-color:#FFFFFF;
+    background:rgba(255,255,255,0.85);
+    box-shadow:
+      0 26px 60px rgba(15,23,42,0.18),
+      0 0 28px rgba(255,255,255,0.9),
+      inset 0 2px 3px #FFFFFF;
+  }
+  .photo-card-inner{
+    position:relative; width:100%; height:100%; border-radius:18px; overflow:hidden;
   }
   .photo-card img{
     width:100%; height:100%; object-fit:cover; display:block;
     transition:transform .6s cubic-bezier(.2,.7,.3,1); pointer-events:none;
+    border-radius:18px;
   }
-  .photo-card:hover img{ transform:scale(1.04); }
-  .photo-card .shield{ position:absolute; inset:0; z-index:2; }
-  .ph-fallback{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:6px; color:var(--ivory); opacity:0.55; font-size:0.8rem; letter-spacing:0.05em; text-align:center; padding:14px; }
-  .ph-fallback .num{ font-family:'Fraunces',serif; font-size:1.6rem; color:var(--brass); opacity:0.9;}
+  .photo-card:hover img{ transform:scale(1.05); }
+  .photo-card .shield{ position:absolute; inset:0; z-index:2; border-radius:18px; }
+  .ph-fallback{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:6px; color:#475569; opacity:0.75; font-size:0.8rem; letter-spacing:0.05em; text-align:center; padding:14px; }
+  .ph-fallback .num{ font-family:'Fraunces',serif; font-size:1.6rem; color:#090A0F; opacity:0.9;}
 
-  /* Glassmorphic Top Badges */
+  /* Glassmorphic Top Badges (Crisp Off-White & Black) */
   .photo-card .num-badge{
-    position:absolute; top:12px; left:12px; font-size:0.75rem; font-weight:500; letter-spacing:0.06em;
-    background:rgba(9,10,15,0.65); color:#FFFFFF; padding:6px 13px; border-radius:30px;
-    backdrop-filter:blur(14px) saturate(180%); -webkit-backdrop-filter:blur(14px) saturate(180%);
-    border:1px solid rgba(255,255,255,0.2); box-shadow:0 4px 12px rgba(0,0,0,0.3); z-index:4;
-    display:flex; align-items:center; gap:6px;
+    position:absolute; top:12px; left:12px; font-size:0.76rem; font-weight:600; letter-spacing:0.04em;
+    background:rgba(255,255,255,0.92); color:#090A0F; padding:6px 14px; border-radius:30px;
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    border:1.5px solid #FFFFFF;
+    box-shadow:0 4px 14px rgba(15,23,42,0.12), inset 0 1px 1px #fff;
+    z-index:4; display:flex; align-items:center; gap:7px;
   }
   .photo-card .num-badge::before{
-    content:''; width:6px; height:6px; border-radius:50%; background:var(--brass); box-shadow:0 0 8px var(--brass-glow);
+    content:''; width:7px; height:7px; border-radius:50%; background:#090A0F;
   }
 
   /* Neumorphic / Glassmorphic Check Circle */
   .check{
-    position:absolute; top:12px; right:12px; width:34px; height:34px; border-radius:50%;
-    border:1.5px solid rgba(255,255,255,0.35); background:rgba(9,10,15,0.55);
-    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    position:absolute; top:12px; right:12px; width:36px; height:36px; border-radius:50%;
+    border:1.5px solid #FFFFFF; background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
     display:flex; align-items:center; justify-content:center;
     transition:all .25s cubic-bezier(.2,.8,.2,1); z-index:4;
-    box-shadow:0 4px 12px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+    box-shadow:0 4px 14px rgba(15,23,42,0.14), inset 0 1px 2px #FFFFFF;
+    cursor:pointer;
   }
-  .check svg{ width:15px; height:15px; opacity:0; transform:scale(0.5); transition:all .2s ease; }
-  .photo-card.selected .check{
-    background:#FFFFFF; border-color:#FFFFFF; box-shadow:0 0 16px rgba(255,255,255,0.5);
-  }
-  .photo-card.selected .check svg{ opacity:1; transform:scale(1); stroke:#090A0F; }
+  .check svg{ width:16px; height:16px; opacity:0; transform:scale(0.5); transition:all .2s ease; stroke:#FFFFFF; }
   .photo-card.selected{
-    box-shadow:0 0 0 2px #FFFFFF inset, 0 18px 40px rgba(0,0,0,0.6);
-    border-color:#FFFFFF;
+    border-color:#090A0F;
+    box-shadow:
+      0 24px 50px rgba(15,23,42,0.22),
+      0 0 0 2px #090A0F inset;
   }
-  .photo-card.selected::before{
-    content:''; position:absolute; inset:0; background:rgba(255,255,255,0.06); pointer-events:none; z-index:1;
+  .photo-card.selected .check{
+    background:#090A0F; border-color:#090A0F;
+    box-shadow:0 6px 18px rgba(0,0,0,0.4);
+  }
+  .photo-card.selected .check svg{
+    opacity:1; transform:scale(1); stroke:#FFFFFF;
   }
 
   /* Subtle Bottom Glass Strip (Catalogue Footer) */
   .photo-card .cat-card-footer{
-    position:absolute; bottom:0; left:0; right:0; padding:12px 14px;
-    background:linear-gradient(to top, rgba(9,10,15,0.85) 0%, rgba(9,10,15,0.4) 60%, transparent 100%);
-    backdrop-filter:blur(6px);
+    position:absolute; bottom:0; left:0; right:0; padding:10px 14px;
+    background:rgba(255,255,255,0.88);
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border-top:1px solid rgba(255,255,255,0.9);
     display:flex; align-items:center; justify-content:space-between;
-    color:var(--offwhite); font-size:0.75rem; letter-spacing:0.04em;
-    z-index:3; pointer-events:none; opacity:0.92;
+    color:#0F172A; font-size:0.75rem; font-weight:500; letter-spacing:0.03em;
+    z-index:3; pointer-events:none; border-radius:0 0 18px 18px;
   }
   .photo-card .cat-card-footer span{
-    display:inline-flex; align-items:center; gap:6px; color:var(--ivory); font-weight:400;
+    display:inline-flex; align-items:center; gap:6px; color:#0F172A; font-weight:500;
   }
-  .photo-card .cat-card-footer span svg{ width:13px; height:13px; opacity:0.85; }
+  .photo-card .cat-card-footer span svg{ width:13px; height:13px; stroke:#090A0F; }
+  .photo-card .cat-card-footer .shortlist-hint{ font-size:0.72rem; color:#64748B; font-weight:400; }
 
   /* Floating Catalogue Indicator Pill (Video Inspired) */
   .cat-floating-pill{
     position:fixed; bottom:24px; right:24px; z-index:550;
-    background:rgba(255,255,255,0.08); color:#FFFFFF;
-    backdrop-filter:blur(24px) saturate(200%); -webkit-backdrop-filter:blur(24px) saturate(200%);
-    border:1px solid rgba(255,255,255,0.24); border-radius:40px;
-    padding:9px 18px; font-size:0.82rem; font-weight:500; letter-spacing:0.04em;
+    background:rgba(255,255,255,0.92); color:#090A0F;
+    backdrop-filter:blur(28px) saturate(200%); -webkit-backdrop-filter:blur(28px) saturate(200%);
+    border:2px solid #FFFFFF; border-radius:40px;
+    padding:9px 18px; font-size:0.84rem; font-weight:600; letter-spacing:0.04em;
     display:flex; align-items:center; gap:10px;
-    box-shadow:0 12px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.22);
-    pointer-events:auto; transition:all .3s ease; opacity:0.95;
+    box-shadow:0 16px 40px rgba(15,23,42,0.18), inset 0 1px 2px #FFFFFF;
+    pointer-events:auto; transition:all .3s ease;
   }
-  .cat-floating-pill svg{ color:var(--brass); }
+  .cat-floating-pill svg{ color:#090A0F; }
   .cat-pill-top-btn{
-    border:none; background:rgba(255,255,255,0.12); width:24px; height:24px; border-radius:50%;
-    color:#FFFFFF; cursor:pointer; display:flex; align-items:center; justify-content:center;
-    transition:background .2s ease;
+    border:none; background:rgba(9,10,15,0.08); width:24px; height:24px; border-radius:50%;
+    color:#090A0F; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:all .2s ease;
   }
-  .cat-pill-top-btn:hover{ background:rgba(255,255,255,0.25); }
+  .cat-pill-top-btn:hover{ background:#090A0F; color:#FFFFFF; }
 
   /* ---------- NEW SECTIONS STYLING ---------- */
   /* 1. Stats Counter Bar */
@@ -815,14 +855,14 @@
   }
   .faq-item.active .faq-answer{ max-height:220px; padding-bottom:20px; }
 
-  /* ---------- SELECTION TRAY ---------- */
+  /* ---------- SELECTION TRAY (OFF-WHITE & BLACK GLASSMORPHISM) ---------- */
   .tray{
     position:fixed; left:50%; bottom:22px; transform:translateX(-50%) translateY(140%);
-    background:rgba(9,10,15,0.85); color:var(--offwhite);
-    backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%);
-    border:1px solid rgba(255,255,255,0.16);
-    border-radius:50px; padding:12px 12px 12px 22px; display:flex; align-items:center; gap:16px;
-    box-shadow:0 14px 40px rgba(0,0,0,0.4); z-index:600;
+    background:rgba(255,255,255,0.92); color:#090A0F;
+    backdrop-filter:blur(24px) saturate(190%); -webkit-backdrop-filter:blur(24px) saturate(190%);
+    border:2px solid #FFFFFF;
+    border-radius:50px; padding:10px 14px 10px 22px; display:flex; align-items:center; gap:16px;
+    box-shadow:0 16px 45px rgba(15,23,42,0.18), inset 0 1px 2px #FFFFFF; z-index:600;
     transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .3s ease, visibility .45s; max-width:92vw;
     visibility:hidden;
     pointer-events:none;
@@ -834,18 +874,26 @@
     pointer-events:auto;
     opacity:1;
   }
-  .tray .count{ font-size:0.9rem; font-weight:500; white-space:nowrap; }
-  .tray button.count{ border:none; background:none; color:var(--offwhite); padding:6px 0; cursor:pointer; font:inherit; text-align:left; }
-  .tray .count b{ color:#FFFFFF; font-family:'Fraunces',serif; font-size:1.05rem; }
-  .tray button.send{ background:#F1F5F9; color:var(--charcoal); border:none; border-radius:40px; padding:11px 20px; font-size:0.85rem; letter-spacing:0.04em; display:flex; align-items:center; gap:8px; cursor:pointer; transition:background .25s ease, transform .15s ease; white-space:nowrap; font-weight:600; }
-  .tray button.send:hover{ background:#FFFFFF; transform:translateY(-1px); }
-  .tray button.clear{ background:none; border:none; color:var(--offwhite); opacity:0.55; font-size:1.2rem; cursor:pointer; line-height:1; padding:6px; }
+  .tray .count{ font-size:0.92rem; font-weight:600; white-space:nowrap; color:#090A0F; }
+  .tray button.count{ border:none; background:none; color:#090A0F; padding:6px 0; cursor:pointer; font:inherit; text-align:left; }
+  .tray .count b{ color:#090A0F; font-family:'Fraunces',serif; font-size:1.1rem; }
+  .tray button.send{
+    background:#090A0F; color:#FFFFFF; border:none; border-radius:40px;
+    padding:11px 22px; font-size:0.86rem; letter-spacing:0.04em;
+    display:flex; align-items:center; gap:8px; cursor:pointer;
+    transition:background .25s ease, transform .15s ease; white-space:nowrap; font-weight:600;
+    box-shadow:0 4px 14px rgba(0,0,0,0.25);
+  }
+  .tray button.send:hover{ background:#1E293B; transform:translateY(-1px); }
+  .tray button.clear{ background:none; border:none; color:#090A0F; opacity:0.6; font-size:1.3rem; cursor:pointer; line-height:1; padding:6px; }
   .tray button.clear:hover{ opacity:1; }
 
-  /* ---------- SELECTED DESIGNS PANEL ---------- */
+  /* ---------- SELECTED DESIGNS PANEL (OFF-WHITE & BLACK GLASSMORPHISM) ---------- */
   .selected-panel{
-    position:fixed; inset:0; z-index:700; background:rgba(9,10,15,0.85); color:var(--offwhite);
-    backdrop-filter:blur(24px) saturate(160%); -webkit-backdrop-filter:blur(24px) saturate(160%);
+    position:fixed; inset:0; z-index:700;
+    background:linear-gradient(135deg, rgba(240,244,248,0.96) 0%, rgba(226,232,240,0.96) 50%, rgba(236,239,244,0.96) 100%);
+    color:#090A0F;
+    backdrop-filter:blur(32px) saturate(180%); -webkit-backdrop-filter:blur(32px) saturate(180%);
     transform:translateY(100%); transition:transform .45s cubic-bezier(.2,.8,.2,1), visibility .45s;
     display:flex; flex-direction:column;
     visibility:hidden;
@@ -858,36 +906,39 @@
   }
   .selected-panel-head{
     display:flex; align-items:center; justify-content:space-between;
-    padding:20px 6vw; border-bottom:1px solid rgba(255,255,255,0.1); flex-shrink:0;
-    background:rgba(9,10,15,0.5); backdrop-filter:blur(14px);
+    padding:20px 6vw; border-bottom:1.5px solid rgba(255,255,255,0.95); flex-shrink:0;
+    background:rgba(255,255,255,0.8); backdrop-filter:blur(24px);
+    box-shadow:0 6px 24px rgba(15,23,42,0.06);
   }
-  .selected-panel-head h2{ font-size:clamp(1.5rem,3.5vw,2.2rem); }
+  .selected-panel-head h2{ font-size:clamp(1.5rem,3.5vw,2.2rem); color:#090A0F; font-family:'Fraunces', serif; font-weight:700; }
   .selected-panel-close{
-    width:42px; height:42px; border-radius:50%; border:1px solid rgba(255,255,255,0.16);
-    background:rgba(255,255,255,0.06); backdrop-filter:blur(10px); color:var(--offwhite); font-size:1.3rem; cursor:pointer;
-    display:flex; align-items:center; justify-content:center; transition:background .2s ease;
+    width:42px; height:42px; border-radius:50%; border:1.5px solid #FFFFFF;
+    background:rgba(255,255,255,0.9); backdrop-filter:blur(10px); color:#090A0F; font-size:1.4rem; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; transition:all .2s ease;
+    box-shadow:0 4px 14px rgba(15,23,42,0.1);
   }
-  .selected-panel-close:hover{ background:rgba(255,255,255,0.16); }
+  .selected-panel-close:hover{ background:#090A0F; color:#FFFFFF; border-color:#090A0F; }
   .selected-panel-list{ flex:1; overflow-y:auto; padding:24px 6vw 60px; }
   .selected-panel-row{
-    width:100%; display:flex; align-items:center; gap:16px; padding:14px 16px; margin-bottom:10px;
-    border:1px solid rgba(255,255,255,0.1); border-radius:12px;
-    background:rgba(255,255,255,0.03); backdrop-filter:blur(10px); color:var(--offwhite);
-    text-align:left; cursor:pointer; transition:border-color .2s ease, background .2s ease;
+    width:100%; display:flex; align-items:center; gap:16px; padding:14px 18px; margin-bottom:12px;
+    border:1.5px solid rgba(255,255,255,0.95); border-radius:18px;
+    background:rgba(255,255,255,0.78); backdrop-filter:blur(14px); color:#090A0F;
+    text-align:left; cursor:pointer; transition:all .25s ease;
+    box-shadow:0 8px 24px rgba(15,23,42,0.06);
   }
-  .selected-panel-row:hover{ border-color:var(--brass); background:rgba(255,255,255,0.06); }
-  .selected-panel-row:hover .selected-panel-label{ color:#FFFFFF; }
+  .selected-panel-row:hover{ border-color:#090A0F; background:#FFFFFF; transform:translateY(-2px); box-shadow:0 12px 30px rgba(15,23,42,0.12); }
+  .selected-panel-row:hover .selected-panel-label{ color:#090A0F; }
   .selected-panel-thumb{
-    width:76px; height:58px; flex-shrink:0; object-fit:cover; border-radius:8px;
-    border:1px solid rgba(255,255,255,0.14); background:var(--plum);
+    width:78px; height:60px; flex-shrink:0; object-fit:cover; border-radius:10px;
+    border:1px solid rgba(255,255,255,0.9); background:#E2E8F0;
   }
-  .selected-panel-copy{ display:flex; flex-direction:column; gap:5px; }
-  .selected-panel-label{ font-family:'Fraunces',serif; font-size:1.1rem; transition:color .2s ease; }
-  .selected-panel-hint{ font-size:0.72rem; color:var(--ivory); opacity:0.65; }
+  .selected-panel-copy{ display:flex; flex-direction:column; gap:4px; }
+  .selected-panel-label{ font-family:'Fraunces',serif; font-size:1.15rem; font-weight:600; color:#090A0F; transition:color .2s ease; }
+  .selected-panel-hint{ font-size:0.75rem; color:#64748B; font-weight:500; }
   .photo-card.locate-highlight{ animation:locateFlash 1.8s ease; }
   @keyframes locateFlash{
-    0%,100%{ box-shadow:0 0 0 1px var(--line); }
-    25%,65%{ box-shadow:0 0 0 3px var(--brass), 0 0 24px var(--brass-glow); }
+    0%,100%{ box-shadow:0 18px 45px rgba(15,23,42,0.12); }
+    25%,65%{ box-shadow:0 0 0 4px #090A0F, 0 20px 50px rgba(0,0,0,0.3); }
   }
 
   /* ---------- CTA ---------- */
@@ -1460,9 +1511,12 @@
 
 <!-- ================= GALLERY OVERLAY (built by JS per category) ================= -->
 <div class="overlay" id="overlay">
-  <!-- Ambient Glassmorphic Lighting Spheres -->
-  <div class="overlay-orb orb-light"></div>
-  <div class="overlay-orb orb-dark"></div>
+  <!-- Ambient Liquid Glass Bubbles & Soft Black Spheres (Matching Reference Image) -->
+  <div class="orb-dark-1"></div>
+  <div class="orb-dark-2"></div>
+  <div class="glass-bubble bubble-1"></div>
+  <div class="glass-bubble bubble-2"></div>
+  <div class="glass-bubble bubble-3"></div>
 
   <div class="overlay-head">
     <div>
@@ -2086,17 +2140,20 @@ async function appendUploadedPhotos(cat, container){
       if(selected.has(key)) card.classList.add('selected');
 
       card.innerHTML = `
-        <img src="${url}" alt="${category} ceiling design ${i}" draggable="false">
-        <div class="shield" oncontextmenu="return false;"></div>
-        <span class="num-badge">${category} #${i}</span>
-        <div class="check" role="button" aria-label="Select design ${i}" tabindex="0">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#090A0F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        </div>
-        <div class="cat-card-footer">
-          <span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-            Tap to zoom
-          </span>
+        <div class="photo-card-inner">
+          <img src="${url}" alt="${category} ceiling design ${i}" draggable="false">
+          <div class="shield" oncontextmenu="return false;"></div>
+          <span class="num-badge">${category} #${i}</span>
+          <div class="check" role="button" aria-label="Select design ${i}" tabindex="0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <div class="cat-card-footer">
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              Tap to zoom
+            </span>
+            <span class="shortlist-hint">Click circle to select</span>
+          </div>
         </div>
       `;
 
@@ -2160,22 +2217,25 @@ function buildPhotoGrid(cat, container){
 
     const src = `images/${cat.folder}/${cat.prefix}-${i}.jpg`;
     card.innerHTML = `
-      <img src="${src}" alt="${category} ceiling design ${i}" draggable="false"
-           onerror="this.style.display='none'; this.nextElementSibling.nextElementSibling.style.display='flex';">
-      <div class="shield" oncontextmenu="return false;"></div>
-      <div class="ph-fallback" style="display:none;">
-        <div class="num">${String(i).padStart(2,'0')}</div>
-        <div>Add ${cat.prefix}-${i}.jpg</div>
-      </div>
-      <span class="num-badge">${category} #${i}</span>
-      <div class="check" role="button" aria-label="Select design ${i}" tabindex="0">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#090A0F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-      </div>
-      <div class="cat-card-footer">
-        <span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-          Tap to zoom
-        </span>
+      <div class="photo-card-inner">
+        <img src="${src}" alt="${category} ceiling design ${i}" draggable="false"
+             onerror="this.style.display='none'; this.nextElementSibling.nextElementSibling.style.display='flex';">
+        <div class="shield" oncontextmenu="return false;"></div>
+        <div class="ph-fallback" style="display:none;">
+          <div class="num">${String(i).padStart(2,'0')}</div>
+          <div>Add ${cat.prefix}-${i}.jpg</div>
+        </div>
+        <span class="num-badge">${category} #${i}</span>
+        <div class="check" role="button" aria-label="Select design ${i}" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <div class="cat-card-footer">
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+            Tap to zoom
+          </span>
+          <span class="shortlist-hint">Click circle to select</span>
+        </div>
       </div>
     `;
 
