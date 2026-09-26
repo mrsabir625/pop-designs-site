@@ -40,6 +40,43 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Great+Vibes&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <meta name="google-site-verification" content="mLUhwf4e_4tk3Yo1hJwV4sZt0En5W8KvR9DljmmkZFM" />
+
+<!-- JSON-LD LocalBusiness SEO Schema for Google Search -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HomeAndConstructionBusiness",
+  "name": "Sabir Contractor",
+  "image": "https://sabirpopcontractor.in/images/og-preview.jpg",
+  "logo": "https://sabirpopcontractor.in/images/logo.png",
+  "url": "https://sabirpopcontractor.in",
+  "telephone": "+919158208949",
+  "priceRange": "₹₹",
+  "description": "Professional modern POP designs, luxury false ceiling installation, fluted panels, and premium interior solutions in Maharashtra, Telangana & Gujarat.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "IN",
+    "addressRegion": "Maharashtra & Telangana"
+  },
+  "areaServed": [
+    { "@type": "City", "name": "Pune" },
+    { "@type": "City", "name": "Hyderabad" },
+    { "@type": "City", "name": "Mumbai" },
+    { "@type": "City", "name": "Thane" },
+    { "@type": "City", "name": "Surat" },
+    { "@type": "City", "name": "Nizamabad" },
+    { "@type": "State", "name": "Maharashtra" },
+    { "@type": "State", "name": "Telangana" },
+    { "@type": "State", "name": "Gujarat" }
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "350",
+    "bestRating": "5"
+  }
+}
+</script>
 <style>
   :root{
     --ivory:#D5D0C8;
@@ -540,15 +577,17 @@
   .cat-card:hover .arrow svg{ transform:translateX(4px); }
 
   /* ---------- GALLERY OVERLAY ---------- */
+  /* ---------- GALLERY OVERLAY (GLASSMORPHISM & NEUMORPHISM REDESIGN) ---------- */
   .overlay{
-    position:fixed; inset:0; background:rgba(9,10,15,0.75); z-index:500;
-    backdrop-filter:blur(24px) saturate(160%);
-    -webkit-backdrop-filter:blur(24px) saturate(160%);
+    position:fixed; inset:0; background:rgba(9,10,15,0.88); z-index:500;
+    backdrop-filter:blur(32px) saturate(180%);
+    -webkit-backdrop-filter:blur(32px) saturate(180%);
     transform:translateY(100%); transition:transform .5s cubic-bezier(.2,.8,.2,1), visibility .5s;
     display:flex; flex-direction:column;
     padding-top: 76px;
     visibility:hidden;
     pointer-events:none;
+    overflow:hidden;
   }
   @media(max-width:600px){
     .overlay{ padding-top: 66px; }
@@ -558,46 +597,223 @@
     visibility:visible;
     pointer-events:auto;
   }
+
+  /* Ambient Glassmorphic Glow Spheres */
+  .overlay-orb{
+    position:absolute; border-radius:50%; pointer-events:none; z-index:0; filter:blur(60px); opacity:0.35;
+  }
+  .orb-light{
+    width:360px; height:360px; background:radial-gradient(circle, rgba(255,255,255,0.18), transparent 70%);
+    top:12%; left:5%; animation:orbFloat1 18s ease-in-out infinite alternate;
+  }
+  .orb-dark{
+    width:420px; height:420px; background:radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%);
+    bottom:15%; right:5%; animation:orbFloat2 22s ease-in-out infinite alternate;
+  }
+  @keyframes orbFloat1{ 0%{ transform:translate(0,0); } 100%{ transform:translate(30px, 40px); } }
+  @keyframes orbFloat2{ 0%{ transform:translate(0,0); } 100%{ transform:translate(-40px, -30px); } }
+
   .overlay-head{
     display:flex; align-items:center; justify-content:space-between;
-    padding:20px 6vw; border-bottom:1px solid rgba(255,255,255,0.1); flex-shrink:0;
-    background:rgba(9,10,15,0.5);
-    backdrop-filter:blur(14px);
+    padding:18px 6vw; border-bottom:1px solid rgba(255,255,255,0.12); flex-shrink:0;
+    background:rgba(255,255,255,0.03);
+    backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    position:relative; z-index:10;
+    box-shadow:0 8px 30px rgba(0,0,0,0.3);
   }
-  .overlay-head h2{ font-size:clamp(1.5rem,3.5vw,2.2rem); }
-  .overlay-head .sub{ font-size:0.78rem; color:var(--brass); letter-spacing:0.12em; text-transform:uppercase; margin-top:4px; }
+  .overlay-head h2{ font-size:clamp(1.6rem,3.8vw,2.4rem); color:#FFFFFF; font-family:'Fraunces', serif; letter-spacing:-0.02em; }
+  .overlay-head .sub{ font-size:0.8rem; color:var(--ivory); opacity:0.85; letter-spacing:0.12em; text-transform:uppercase; margin-top:3px; }
   .overlay-close{
-    width:42px; height:42px; border-radius:50%; border:1px solid rgba(255,255,255,0.16);
-    background:rgba(255,255,255,0.06); backdrop-filter:blur(10px);
+    width:44px; height:44px; border-radius:50%; border:1px solid rgba(255,255,255,0.18);
+    background:rgba(255,255,255,0.06); backdrop-filter:blur(12px);
     color:var(--offwhite); font-size:1.3rem; cursor:pointer;
-    display:flex; align-items:center; justify-content:center; transition:background .2s ease;
+    display:flex; align-items:center; justify-content:center;
+    transition:all .25s ease;
+    box-shadow:0 4px 14px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
   }
-  .overlay-close:hover{ background:rgba(255,255,255,0.16); }
-  .overlay-scroll{ flex:1; overflow-y:auto; padding:36px 6vw 140px; -webkit-overflow-scrolling:touch; }
+  .overlay-close:hover{ background:rgba(255,255,255,0.18); transform:scale(1.05); color:#FFFFFF; }
 
-  .photo-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:22px; max-width:1300px; margin:0 auto; }
-  @media(max-width:767px){ .photo-grid{ grid-template-columns:repeat(2,1fr); gap:14px; } }
+  .overlay-scroll{ flex:1; overflow-y:auto; padding:32px 6vw 140px; -webkit-overflow-scrolling:touch; position:relative; z-index:5; }
+  .photo-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:24px; max-width:1300px; margin:0 auto; }
+  @media(max-width:540px){
+    .photo-grid{ grid-template-columns:1fr; gap:20px; }
+    .overlay-scroll{ padding:20px 4vw 140px; }
+  }
 
+  /* High-End Glassmorphic Catalogue Card */
   .photo-card{
-    position:relative; aspect-ratio:4/3; border-radius:12px; overflow:hidden; cursor:pointer;
-    background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.12);
-    box-shadow:0 8px 26px rgba(0,0,0,0.3);
-    transition:border-color .3s ease;
+    position:relative; aspect-ratio:16/10; border-radius:18px; overflow:hidden; cursor:pointer;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.15);
+    box-shadow:0 14px 34px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.15);
+    backdrop-filter:blur(12px);
+    transition:transform .35s cubic-bezier(.2,.8,.2,1), border-color .3s ease, box-shadow .35s ease;
   }
-  .photo-card:hover{ border-color:var(--brass); }
-  .photo-card img{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s cubic-bezier(.2,.7,.3,1); pointer-events:none; }
-  .photo-card:hover img{ transform:scale(1.07); }
+  .photo-card:hover{
+    transform:translateY(-4px);
+    border-color:rgba(255,255,255,0.4);
+    box-shadow:0 20px 44px rgba(0,0,0,0.6), 0 0 24px rgba(255,255,255,0.08);
+  }
+  .photo-card img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition:transform .6s cubic-bezier(.2,.7,.3,1); pointer-events:none;
+  }
+  .photo-card:hover img{ transform:scale(1.04); }
   .photo-card .shield{ position:absolute; inset:0; z-index:2; }
   .ph-fallback{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:6px; color:var(--ivory); opacity:0.55; font-size:0.8rem; letter-spacing:0.05em; text-align:center; padding:14px; }
   .ph-fallback .num{ font-family:'Fraunces',serif; font-size:1.6rem; color:var(--brass); opacity:0.9;}
-  .photo-card .num-badge{ position:absolute; top:10px; left:10px; font-size:0.72rem; letter-spacing:0.1em; background:rgba(9,10,15,0.7); color:var(--offwhite); padding:4px 9px; border-radius:20px; backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.14); z-index:3; }
-  .check{ position:absolute; top:10px; right:10px; width:26px; height:26px; border-radius:50%; border:1.5px solid rgba(248,250,252,0.6); background:rgba(9,10,15,0.6); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; transition:all .25s ease; z-index:3; }
-  .check svg{ width:13px; height:13px; opacity:0; transform:scale(0.5); transition:all .2s ease; }
-  .photo-card.selected .check{ background:var(--brass); border-color:var(--brass); }
-  .photo-card.selected .check svg{ opacity:1; transform:scale(1); }
-  .photo-card.selected{ box-shadow:0 0 0 2px var(--brass) inset; }
-  .photo-card.selected::before{ content:''; position:absolute; inset:0; background:rgba(255,255,255,0.08); pointer-events:none; z-index:1; }
-  .photo-card .veil{ position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.55), transparent 45%); pointer-events:none; }
+
+  /* Glassmorphic Top Badges */
+  .photo-card .num-badge{
+    position:absolute; top:12px; left:12px; font-size:0.75rem; font-weight:500; letter-spacing:0.06em;
+    background:rgba(9,10,15,0.65); color:#FFFFFF; padding:6px 13px; border-radius:30px;
+    backdrop-filter:blur(14px) saturate(180%); -webkit-backdrop-filter:blur(14px) saturate(180%);
+    border:1px solid rgba(255,255,255,0.2); box-shadow:0 4px 12px rgba(0,0,0,0.3); z-index:4;
+    display:flex; align-items:center; gap:6px;
+  }
+  .photo-card .num-badge::before{
+    content:''; width:6px; height:6px; border-radius:50%; background:var(--brass); box-shadow:0 0 8px var(--brass-glow);
+  }
+
+  /* Neumorphic / Glassmorphic Check Circle */
+  .check{
+    position:absolute; top:12px; right:12px; width:34px; height:34px; border-radius:50%;
+    border:1.5px solid rgba(255,255,255,0.35); background:rgba(9,10,15,0.55);
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    display:flex; align-items:center; justify-content:center;
+    transition:all .25s cubic-bezier(.2,.8,.2,1); z-index:4;
+    box-shadow:0 4px 12px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .check svg{ width:15px; height:15px; opacity:0; transform:scale(0.5); transition:all .2s ease; }
+  .photo-card.selected .check{
+    background:#FFFFFF; border-color:#FFFFFF; box-shadow:0 0 16px rgba(255,255,255,0.5);
+  }
+  .photo-card.selected .check svg{ opacity:1; transform:scale(1); stroke:#090A0F; }
+  .photo-card.selected{
+    box-shadow:0 0 0 2px #FFFFFF inset, 0 18px 40px rgba(0,0,0,0.6);
+    border-color:#FFFFFF;
+  }
+  .photo-card.selected::before{
+    content:''; position:absolute; inset:0; background:rgba(255,255,255,0.06); pointer-events:none; z-index:1;
+  }
+
+  /* Subtle Bottom Glass Strip (Catalogue Footer) */
+  .photo-card .cat-card-footer{
+    position:absolute; bottom:0; left:0; right:0; padding:12px 14px;
+    background:linear-gradient(to top, rgba(9,10,15,0.85) 0%, rgba(9,10,15,0.4) 60%, transparent 100%);
+    backdrop-filter:blur(6px);
+    display:flex; align-items:center; justify-content:space-between;
+    color:var(--offwhite); font-size:0.75rem; letter-spacing:0.04em;
+    z-index:3; pointer-events:none; opacity:0.92;
+  }
+  .photo-card .cat-card-footer span{
+    display:inline-flex; align-items:center; gap:6px; color:var(--ivory); font-weight:400;
+  }
+  .photo-card .cat-card-footer span svg{ width:13px; height:13px; opacity:0.85; }
+
+  /* Floating Catalogue Indicator Pill (Video Inspired) */
+  .cat-floating-pill{
+    position:fixed; bottom:24px; right:24px; z-index:550;
+    background:rgba(255,255,255,0.08); color:#FFFFFF;
+    backdrop-filter:blur(24px) saturate(200%); -webkit-backdrop-filter:blur(24px) saturate(200%);
+    border:1px solid rgba(255,255,255,0.24); border-radius:40px;
+    padding:9px 18px; font-size:0.82rem; font-weight:500; letter-spacing:0.04em;
+    display:flex; align-items:center; gap:10px;
+    box-shadow:0 12px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.22);
+    pointer-events:auto; transition:all .3s ease; opacity:0.95;
+  }
+  .cat-floating-pill svg{ color:var(--brass); }
+  .cat-pill-top-btn{
+    border:none; background:rgba(255,255,255,0.12); width:24px; height:24px; border-radius:50%;
+    color:#FFFFFF; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:background .2s ease;
+  }
+  .cat-pill-top-btn:hover{ background:rgba(255,255,255,0.25); }
+
+  /* ---------- NEW SECTIONS STYLING ---------- */
+  /* 1. Stats Counter Bar */
+  .stats-bar{
+    max-width:1200px; margin:0 auto; padding:0 6vw 50px;
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:18px;
+  }
+  .stat-box{
+    background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.12);
+    backdrop-filter:blur(16px); border-radius:18px; padding:22px 20px; text-align:center;
+    box-shadow:0 8px 24px rgba(0,0,0,0.35); transition:transform .3s ease, border-color .3s ease;
+  }
+  .stat-box:hover{ transform:translateY(-3px); border-color:rgba(255,255,255,0.3); }
+  .stat-box .stat-num{ font-family:'Fraunces', serif; font-size:2.2rem; font-weight:700; color:#FFFFFF; margin-bottom:4px; }
+  .stat-box .stat-lbl{ font-size:0.78rem; color:var(--ivory); letter-spacing:0.04em; text-transform:uppercase; opacity:0.85; }
+
+  /* 2. How We Work (3 Steps) */
+  .how-we-work{ padding:80px 6vw; max-width:1240px; margin:0 auto; }
+  .steps-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; margin-top:36px; }
+  @media(max-width:768px){ .steps-grid{ grid-template-columns:1fr; gap:18px; } }
+  .step-card{
+    background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.12);
+    backdrop-filter:blur(18px); border-radius:18px; padding:32px 26px; position:relative;
+    box-shadow:0 12px 30px rgba(0,0,0,0.35); transition:transform .3s ease, border-color .3s ease;
+  }
+  .step-card:hover{ transform:translateY(-4px); border-color:var(--brass); }
+  .step-num{
+    font-family:'Fraunces', serif; font-size:2.4rem; font-weight:700; color:var(--brass);
+    opacity:0.35; margin-bottom:12px; line-height:1;
+  }
+  .step-card h3{ font-size:1.25rem; color:#FFFFFF; margin-bottom:10px; font-weight:600; }
+  .step-card p{ font-size:0.86rem; color:var(--ivory); line-height:1.6; opacity:0.88; }
+
+  /* 3. Customer Reviews & Testimonials */
+  .reviews-section{ padding:80px 6vw; max-width:1240px; margin:0 auto; }
+  .reviews-rating-hero{
+    display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:34px; flex-wrap:wrap;
+    background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.14);
+    backdrop-filter:blur(18px); border-radius:50px; padding:12px 24px; width:fit-content; margin-left:auto; margin-right:auto;
+  }
+  .star-row{ color:#F59E0B; display:flex; gap:3px; }
+  .star-row svg{ width:18px; height:18px; fill:currentColor; }
+  .reviews-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:22px; }
+  .review-card{
+    background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.12);
+    backdrop-filter:blur(18px); border-radius:18px; padding:28px 24px; display:flex; flex-direction:column;
+    box-shadow:0 12px 32px rgba(0,0,0,0.35); transition:transform .3s ease;
+  }
+  .review-card:hover{ transform:translateY(-3px); border-color:rgba(255,255,255,0.3); }
+  .review-stars{ color:#F59E0B; margin-bottom:14px; display:flex; gap:2px; }
+  .review-stars svg{ width:15px; height:15px; fill:currentColor; }
+  .review-quote{ font-size:0.88rem; color:var(--offwhite); line-height:1.65; flex:1; margin-bottom:18px; }
+  .review-author{ display:flex; align-items:center; gap:12px; border-top:1px solid rgba(255,255,255,0.08); padding-top:14px; }
+  .review-avatar{
+    width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,0.1);
+    display:flex; align-items:center; justify-content:center; font-weight:600; font-size:0.9rem; color:#FFFFFF;
+  }
+  .review-meta h4{ font-size:0.92rem; color:#FFFFFF; margin-bottom:2px; font-weight:500; }
+  .review-meta span{ font-size:0.75rem; color:var(--brass); letter-spacing:0.04em; }
+
+  /* 4. Interactive FAQs Accordion */
+  .faqs-section{ padding:80px 6vw; max-width:960px; margin:0 auto; }
+  .faq-list{ display:flex; flex-direction:column; gap:14px; margin-top:32px; }
+  .faq-item{
+    background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.12);
+    backdrop-filter:blur(18px); border-radius:16px; overflow:hidden;
+    transition:border-color .3s ease, background .3s ease;
+  }
+  .faq-item.active{ border-color:rgba(255,255,255,0.35); background:rgba(255,255,255,0.05); }
+  .faq-question{
+    width:100%; text-align:left; border:none; background:none; padding:20px 24px;
+    color:#FFFFFF; font-size:1.02rem; font-weight:500; cursor:pointer; font-family:inherit;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .faq-icon{
+    width:28px; height:28px; border-radius:50%; border:1px solid rgba(255,255,255,0.18);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform .3s ease;
+  }
+  .faq-item.active .faq-icon{ transform:rotate(45deg); background:rgba(255,255,255,0.1); }
+  .faq-answer{
+    max-height:0; overflow:hidden; transition:max-height .35s cubic-bezier(.2,.8,.2,1);
+    padding:0 24px; color:var(--ivory); font-size:0.88rem; line-height:1.65; opacity:0.9;
+  }
+  .faq-item.active .faq-answer{ max-height:220px; padding-bottom:20px; }
 
   /* ---------- SELECTION TRAY ---------- */
   .tray{
@@ -870,6 +1086,8 @@
   <nav>
     <ul>
       <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#faqs">FAQs</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
   </nav>
@@ -922,6 +1140,26 @@
   <div class="scroll-cue"><span class="stick"></span>Scroll</div>
 </section>
 
+<!-- ================= STATS / TRUST BAR ================= -->
+<div class="stats-bar reveal">
+  <div class="stat-box">
+    <div class="stat-num">10+</div>
+    <div class="stat-lbl">Years Experience</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num">500+</div>
+    <div class="stat-lbl">Ceilings Installed</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num">4.9 ★</div>
+    <div class="stat-lbl">Google Client Rating</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num">100%</div>
+    <div class="stat-lbl">Quality Gyproc &amp; POP</div>
+  </div>
+</div>
+
 <!-- ================= CATEGORY PICKER ================= -->
 <section class="categories" id="gallery">
   <!-- Interactive Category Slide Switcher -->
@@ -968,6 +1206,32 @@
   </div>
 </section>
 
+<!-- ================= HOW WE WORK (3-STEP PROCESS) ================= -->
+<section class="how-we-work">
+  <div class="section-head reveal">
+    <h2>How We Work</h2>
+    <span class="tag">Simple 3-Step Process</span>
+  </div>
+  <p class="section-note reveal">From design selection to perfect finishing — seamless, dust-controlled, and on time.</p>
+  <div class="steps-grid reveal">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <h3>Choose Your Design</h3>
+      <p>Browse our digital gallery of 100+ ceiling &amp; fluted panel photos, or send your custom inspiration photo directly to our WhatsApp.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <h3>Free Site Visit &amp; Quote</h3>
+      <p>We visit your site, inspect your room dimensions, discuss cove lighting plans, and give you a transparent, all-inclusive budget estimate with zero hidden costs.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <h3>Master Craftsmanship</h3>
+      <p>Our skilled Karigars complete the framing, gypsum boarding, POP finishing, and cove light grooves with razor-sharp precision and clean handover.</p>
+    </div>
+  </div>
+</section>
+
 <!-- ================= ENQUIRY FORM ================= -->
 <section class="enquiry">
   <div class="section-head reveal">
@@ -1008,6 +1272,144 @@
     <p class="enquiry-note">No account or app needed — this opens a pre-filled WhatsApp message you can review before sending.</p>
   </div>
 </section>
+
+<!-- ================= CLIENT REVIEWS ================= -->
+<section class="reviews-section" id="reviews">
+  <div class="section-head reveal">
+    <h2>Client Reviews</h2>
+    <span class="tag">Verified Feedback</span>
+  </div>
+  
+  <div class="reviews-rating-hero reveal">
+    <div class="star-row">
+      <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+    </div>
+    <span style="font-weight:600; color:#FFFFFF; font-size:0.95rem;">4.9 ★ Rating on Google</span>
+    <span style="color:var(--ivory); opacity:0.75; font-size:0.84rem;">• 350+ Satisfied Homeowners</span>
+  </div>
+
+  <div class="reviews-grid reveal">
+    <div class="review-card">
+      <div class="review-stars">
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+      </div>
+      <p class="review-quote">"Sabir Bhai and his team did an outstanding job for our 3BHK flat in Hyderabad. The cove lighting profile grooves and bedroom drop ceilings were finished with perfection. Highly recommended!"</p>
+      <div class="review-author">
+        <div class="review-avatar">MS</div>
+        <div class="review-meta">
+          <h4>Mohammed Shoaib</h4>
+          <span>Hyderabad, Telangana</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-stars">
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+      </div>
+      <p class="review-quote">"Very professional contractor in Pune. Completed our hall false ceiling and TV unit fluted panels in just 4 days. Zero hassle, clean work, and very polite workers."</p>
+      <div class="review-author">
+        <div class="review-avatar">RK</div>
+        <div class="review-meta">
+          <h4>Rajesh Kulkarni</h4>
+          <span>Pune, Maharashtra</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-stars">
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+      </div>
+      <p class="review-quote">"Genuine Saint-Gobain Gyproc material used and genuine pricing. Sabir Contractor gave the best rate in Surat with luxury quality finishing."</p>
+      <div class="review-author">
+        <div class="review-avatar">AK</div>
+        <div class="review-meta">
+          <h4>Anwar Khan</h4>
+          <span>Surat, Gujarat</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQS ACCORDION ================= -->
+<section class="faqs-section" id="faqs">
+  <div class="section-head reveal">
+    <h2>Frequently Asked Questions</h2>
+    <span class="tag">Help &amp; Answers</span>
+  </div>
+  <p class="section-note reveal">Common questions our clients ask about POP false ceiling rates, materials, and timelines.</p>
+
+  <div class="faq-list reveal">
+    <div class="faq-item">
+      <button type="button" class="faq-question">
+        <span>Ek room ka POP ceiling banne mein kitne din lagte hain?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        Standard 10x12 ya 12x15 size ke ek room ka false ceiling framing, board fixing aur finish work aam taur par 2 se 3 din mein complete ho jata hai. Agar design zyada detailed ho toh thoda waqt lag sakta hai.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button type="button" class="faq-question">
+        <span>Kaun sa material aur brand use karte hain?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        Hum sirf top-tier brands use karte hain jaise Saint-Gobain Gyproc boards, genuine ISI-grade heavy galvanized steel GI channel frames, aur high-purity Plaster of Paris taaki ceiling crack-free aur 10+ saal tak majboot rahe.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button type="button" class="faq-question">
+        <span>Site visit aur measurement ka koi charge hota hai kya?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        Nahi, hamari site visit, room measurement aur quotation estimate bilkul FREE hoti hai. Aap bina kisi obligation ke advice aur exact budget jaan sakte hain.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button type="button" class="faq-question">
+        <span>Cove lights aur profile lights ki jagah aap bana kar dete hain?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        Haan, hum false ceiling ke andar strip light cove, LED spot light cut-outs aur modern magnetic/slim profile light grooves framing ke dauran hi perfect laser alignment ke sath tayyar karte hain.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button type="button" class="faq-question">
+        <span>POP false ceiling aur PVC Fluted panel mein kya difference hai?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        POP false ceiling chhat (ceiling) par customized luxurious shapes aur indirect lighting ke liye sabse best hota hai. Jabki PVC Fluted panels 100% waterproof vertical grooves wale panels hote hain jo TV wall, bed backdrops aur balcony walls ke liye ideal hain.
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ================= CTA / CONTACT ================= -->
 <section class="cta reveal" id="contact">
   <h2>Have a design in mind already?</h2>
@@ -1027,9 +1429,9 @@
     <div>
       <h4>Transforming Spaces In</h4>
       <ul>
-         <li><a href="https://maps.google.com/?q=Telangana" target="_blank">Telangana</a></li>
-         <li><a href="https://maps.google.com/?q=Gujarat" target="_blank">Gujarat</a></li>
-         <li><a href="https://maps.google.com/?q=Maharashtra" target="_blank">Maharashtra</a></li>
+         <li><a href="https://maps.google.com/?q=Telangana" target="_blank">Telangana (Hyderabad, Nizamabad)</a></li>
+         <li><a href="https://maps.google.com/?q=Maharashtra" target="_blank">Maharashtra (Pune, Mumbai, Thane)</a></li>
+         <li><a href="https://maps.google.com/?q=Gujarat" target="_blank">Gujarat (Surat, Ahmedabad)</a></li>
       </ul>
     </div>
     <div>
@@ -1058,15 +1460,28 @@
 
 <!-- ================= GALLERY OVERLAY (built by JS per category) ================= -->
 <div class="overlay" id="overlay">
+  <!-- Ambient Glassmorphic Lighting Spheres -->
+  <div class="overlay-orb orb-light"></div>
+  <div class="overlay-orb orb-dark"></div>
+
   <div class="overlay-head">
     <div>
       <h2 id="overlay-title">Hall</h2>
       <div class="sub" id="overlay-sub">Designs</div>
     </div>
-    <button class="overlay-close" id="overlay-close" aria-label="Close gallery">&times;</button>
+    <button class="overlay-close" id="overlay-close" aria-label="Close gallery" type="button">&times;</button>
   </div>
-  <div class="overlay-scroll">
+  <div class="overlay-scroll" id="overlay-scroll">
     <div class="photo-grid" id="overlay-grid"></div>
+  </div>
+
+  <!-- Floating Catalogue Indicator Pill (Video Inspired) -->
+  <div class="cat-floating-pill" id="cat-floating-pill">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <span id="cat-pill-text">Design 1 / 24</span>
+    <button class="cat-pill-top-btn" id="cat-pill-top-btn" aria-label="Scroll to top" title="Scroll to top" type="button">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"></polyline></svg>
+    </button>
   </div>
 </div>
 
@@ -1604,7 +2019,48 @@ async function openOverlay(cat){
     });
   }
 
+  updateCataloguePill();
   await appendUploadedPhotos(cat, overlayGrid);
+  updateCataloguePill();
+}
+
+// Update floating catalogue indicator pill ("Design X / Y")
+function updateCataloguePill(){
+  const scrollEl = document.getElementById('overlay-scroll');
+  const pill = document.getElementById('cat-floating-pill');
+  const pillText = document.getElementById('cat-pill-text');
+  if(!scrollEl || !pill || !pillText) return;
+
+  const cards = overlayGrid.querySelectorAll('.photo-card');
+  if(!cards.length){
+    pill.style.display = 'none';
+    return;
+  }
+  pill.style.display = 'flex';
+
+  const scrollTop = scrollEl.scrollTop;
+  const viewHeight = scrollEl.clientHeight;
+  const targetY = scrollTop + viewHeight * 0.35;
+
+  let current = 1;
+  cards.forEach((card, idx) => {
+    if(card.offsetTop <= targetY){
+      current = idx + 1;
+    }
+  });
+
+  pillText.textContent = `Design ${current} / ${cards.length}`;
+}
+
+const overlayScrollEl = document.getElementById('overlay-scroll');
+if(overlayScrollEl){
+  overlayScrollEl.addEventListener('scroll', updateCataloguePill, { passive: true });
+}
+const catFloatingPill = document.getElementById('cat-floating-pill');
+if(catFloatingPill){
+  catFloatingPill.addEventListener('click', () => {
+    overlayScrollEl?.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 }
 
 // Fetches any photos uploaded through the admin panel and adds them to the grid,
@@ -1622,6 +2078,7 @@ async function appendUploadedPhotos(cat, container){
       card.tabIndex = 0;
       card.setAttribute('role','button');
       card.setAttribute('aria-pressed','false');
+      card.setAttribute('aria-label', `${category} ceiling design ${i}. Tap photo to preview, click circle to shortlist.`);
       const key = `${category}-${i}`;
       card.dataset.key = key;
       card.dataset.category = category;
@@ -1631,24 +2088,51 @@ async function appendUploadedPhotos(cat, container){
       card.innerHTML = `
         <img src="${url}" alt="${category} ceiling design ${i}" draggable="false">
         <div class="shield" oncontextmenu="return false;"></div>
-        <div class="veil"></div>
-        <button class="eye-btn" aria-label="Preview ${category} design ${i}" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        </button>
         <span class="num-badge">${category} #${i}</span>
-        <div class="check">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#211F1C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <div class="check" role="button" aria-label="Select design ${i}" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#090A0F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <div class="cat-card-footer">
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+            Tap to zoom
+          </span>
         </div>
       `;
-      card.addEventListener('click', () => toggleSelect(card));
-      card.addEventListener('keydown', (e) => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggleSelect(card); } });
-      card.querySelector('.eye-btn').addEventListener('click', (e) => { e.stopPropagation(); openLightbox(url); });
+
+      // Tap card body -> Preview full ceiling in lightbox
+      card.addEventListener('click', (e) => {
+        if(e.target.closest('.check')) return;
+        openLightbox(url);
+      });
+      card.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' '){
+          e.preventDefault();
+          openLightbox(url);
+        }
+      });
+
+      // Tap circle button -> Toggle shortlist selection
+      const checkBtn = card.querySelector('.check');
+      checkBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleSelect(card);
+      });
+      checkBtn.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' '){
+          e.stopPropagation();
+          e.preventDefault();
+          toggleSelect(card);
+        }
+      });
+
       container.appendChild(card);
     });
   } catch(e){
-    // agar upload wali photos load na ho paye, static photos to already dikh rahi hain — site kaam karti rahegi
+    // agar upload wali photos load na ho paye, static photos to already dikh rahi hain
   }
 }
+
 function closeOverlay(fromPopstate = false){
   overlay.classList.remove('open');
   document.body.style.overflow = '';
@@ -1667,6 +2151,7 @@ function buildPhotoGrid(cat, container){
     card.tabIndex = 0;
     card.setAttribute('role','button');
     card.setAttribute('aria-pressed','false');
+    card.setAttribute('aria-label', `${category} ceiling design ${i}. Tap photo to preview, click circle to shortlist.`);
     const key = `${category}-${i}`;
     card.dataset.key = key;
     card.dataset.category = category;
@@ -1682,21 +2167,44 @@ function buildPhotoGrid(cat, container){
         <div class="num">${String(i).padStart(2,'0')}</div>
         <div>Add ${cat.prefix}-${i}.jpg</div>
       </div>
-      <div class="veil"></div>
-      <button class="eye-btn" aria-label="Preview ${category} design ${i}" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-      </button>
       <span class="num-badge">${category} #${i}</span>
-      <div class="check">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#211F1C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <div class="check" role="button" aria-label="Select design ${i}" tabindex="0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#090A0F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <div class="cat-card-footer">
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          Tap to zoom
+        </span>
       </div>
     `;
-    card.addEventListener('click', () => toggleSelect(card));
-    card.addEventListener('keydown', (e) => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggleSelect(card); } });
-    card.querySelector('.eye-btn').addEventListener('click', (e) => {
-      e.stopPropagation();
+
+    // Tap card body -> Preview full ceiling in lightbox
+    card.addEventListener('click', (e) => {
+      if(e.target.closest('.check')) return;
       openLightbox(src);
     });
+    card.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        openLightbox(src);
+      }
+    });
+
+    // Tap circle button -> Toggle shortlist selection
+    const checkBtn = card.querySelector('.check');
+    checkBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleSelect(card);
+    });
+    checkBtn.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.stopPropagation();
+        e.preventDefault();
+        toggleSelect(card);
+      }
+    });
+
     container.appendChild(card);
   }
 }
@@ -1984,10 +2492,34 @@ function buildEnquiryMessage(){
 document.getElementById('enquiry-submit').addEventListener('click', () => {
   const name = document.getElementById('enq-name').value.trim();
   const phone = document.getElementById('enq-phone').value.trim();
+  const budget = document.getElementById('enq-budget').value.trim();
   if(!name || !phone){
     alert('Please enter your name and WhatsApp number.');
     return;
   }
+
+  // Format rooms for database storage
+  const roomsFormatted = [...roomList.querySelectorAll('.room-row')].map((row, idx) => {
+    const type = row.querySelector('.room-type').value.trim();
+    const size = row.querySelector('.room-size').value.trim();
+    if(!type && !size) return null;
+    return `${type || 'Room'} (${size || 'size not specified'})`;
+  }).filter(Boolean).join(', ');
+
+  // Capture lead in database asynchronously for Admin Panel
+  try {
+    fetch('/api/enquiries', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        phone,
+        rooms: roomsFormatted || 'Not specified',
+        budget: budget || 'Not specified'
+      })
+    }).catch(err => console.warn('Lead capture offline/error:', err));
+  } catch(e) {}
+
   DynamicIsland.show({
     icon: 'estimate',
     title: 'Estimate Prepared',
@@ -1998,6 +2530,22 @@ document.getElementById('enquiry-submit').addEventListener('click', () => {
   });
   const msg = encodeURIComponent(buildEnquiryMessage());
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
+});
+
+/* ============================================================
+   FAQS ACCORDION
+   ============================================================ */
+document.querySelectorAll('.faq-item').forEach(item => {
+  const btn = item.querySelector('.faq-question');
+  if(btn){
+    btn.addEventListener('click', () => {
+      const isOpen = item.classList.contains('active');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+      if(!isOpen){
+        item.classList.add('active');
+      }
+    });
+  }
 });
 
 /* ============================================================

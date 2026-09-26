@@ -689,6 +689,10 @@
       <div class="label">Blocked IPs</div>
     </div>
     <div class="stat-card">
+      <div class="num" id="stat-enquiries" style="color:#60A5FA;">0</div>
+      <div class="label">Customer Leads / Enquiries</div>
+    </div>
+    <div class="stat-card">
       <div class="num" style="color:var(--safe); font-size:1.45rem; display:flex; align-items:center; gap:6px;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         <span>Shield Active</span>
@@ -696,6 +700,32 @@
       <div class="label">Barrier (Firewall + Rate Limit)</div>
     </div>
   </div>
+
+  <!-- CUSTOMER LEADS & ENQUIRIES -->
+  <section id="section-enquiries">
+    <h2>
+      <span>Customer Leads &amp; Enquiries</span>
+      <span class="badge" style="background:rgba(96,165,250,0.18); border-color:rgba(96,165,250,0.4); color:#93C5FD;">Direct Phone &amp; WhatsApp</span>
+    </h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date &amp; Time</th>
+            <th>Customer Name</th>
+            <th>Phone / Contact</th>
+            <th>Rooms / Work Type</th>
+            <th>Budget</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="enquiries-body">
+          <tr><td colspan="6" class="empty">Loading enquiries...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="refresh-note">Customers who prepared or sent room estimates. Click Call or WhatsApp to follow up instantly.</p>
+  </section>
 
   <!-- PHOTO UPLOAD & MANAGEMENT -->
   <section>
@@ -999,9 +1029,10 @@ document.getElementById('logout-btn').addEventListener('click', async () => {
    ============================================================ */
 async function loadData(){
   try{
-    const [visitorsRes, blockedRes] = await Promise.all([
+    const [visitorsRes, blockedRes, enquiriesRes] = await Promise.all([
       fetch('/api/admin/visitors'),
-      fetch('/api/admin/blocked')
+      fetch('/api/admin/blocked'),
+      fetch('/api/admin/enquiries')
     ]);
     if(!visitorsRes.ok || !blockedRes.ok){
       showLogin('Session expired, please sign in again.');
@@ -1009,13 +1040,56 @@ async function loadData(){
     }
     const visitors = await visitorsRes.json();
     const blocked = await blockedRes.json();
+    const enquiries = enquiriesRes.ok ? await enquiriesRes.json() : [];
+
     renderVisitors(visitors, blocked);
     renderBlocked(blocked);
+    renderEnquiries(enquiries);
 
     document.getElementById('stat-total').textContent = visitors.length;
     document.getElementById('stat-unique').textContent = new Set(visitors.map(v => v.ip)).size;
     document.getElementById('stat-blocked').textContent = blocked.length;
+    const eqStat = document.getElementById('stat-enquiries');
+    if(eqStat) eqStat.textContent = enquiries.length;
   } catch(e){}
+}
+
+function renderEnquiries(enquiries){
+  const body = document.getElementById('enquiries-body');
+  if(!body) return;
+  if(!enquiries || !enquiries.length){
+    body.innerHTML = '<tr><td colspan="6" class="empty">No customer enquiries received yet.</td></tr>';
+    return;
+  }
+  body.innerHTML = enquiries.map(eq => {
+    const rawPhone = (eq.phone || '').replace(/\D/g, '');
+    const cleanPhone = rawPhone.length === 10 ? '91' + rawPhone : rawPhone;
+    const roomsText = eq.rooms
+      ? (typeof eq.rooms === 'string' ? eq.rooms : (Array.isArray(eq.rooms) ? eq.rooms.map(r => `${r.roomType || 'Room'} (${r.roomSize || 'N/A'})`).join(', ') : 'Custom'))
+      : 'General estimate';
+    return `
+      <tr>
+        <td>${new Date(eq.createdAt).toLocaleString()}</td>
+        <td style="font-weight:600; color:#FFFFFF;">${eq.name || 'Anonymous'}</td>
+        <td>
+          <span style="font-family:monospace; margin-right:8px;">${eq.phone}</span>
+          <a class="btn" style="background:#10B981; color:#090A0F; padding:4px 10px; margin-right:4px;" href="tel:${eq.phone}">Call</a>
+          <a class="btn" style="background:#25D366; color:#090A0F; padding:4px 10px;" href="https://wa.me/${cleanPhone}" target="_blank">WhatsApp</a>
+        </td>
+        <td>${roomsText}</td>
+        <td><span style="color:var(--brass); font-weight:600;">${eq.budget ? '₹' + eq.budget : 'Flexible'}</span></td>
+        <td>
+          <button class="btn btn-block" onclick="deleteEnquiry('${eq._id}')" style="padding:4px 10px;">Delete</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+async function deleteEnquiry(id){
+  if(!confirm('Delete this customer enquiry record?')) return;
+  await fetch('/api/admin/enquiries/' + id, { method: 'DELETE' });
+  loadData();
 }
 
 const PAGE_SIZE = 15;

@@ -156,6 +156,16 @@ const Visit = mongoose.models.Visit || mongoose.model('Visit', VisitSchema);
 const BlockedIP = mongoose.models.BlockedIP || mongoose.model('BlockedIP', BlockedIPSchema);
 const Photo = mongoose.models.Photo || mongoose.model('Photo', PhotoSchema);
 
+const EnquirySchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  phone: { type: String, required: true },
+  rooms: { type: mongoose.Schema.Types.Mixed, default: '' },
+  budget: String,
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Enquiry = mongoose.models.Enquiry || mongoose.model('Enquiry', EnquirySchema);
+
 /* ============================================================
    VISITOR LOGGING
    ============================================================ */
@@ -329,6 +339,49 @@ app.post('/api/admin/unblock', requireAdmin, async (req, res) => {
     await connectDB();
     const { ip } = req.body;
     await BlockedIP.deleteOne({ ip });
+    res.json({ ok: true });
+  } catch {
+    res.status(500).json({ error: 'DB error' });
+  }
+});
+
+/* ============================================================
+   CUSTOMER ENQUIRIES / LEADS API
+   ============================================================ */
+app.post('/api/enquiries', async (req, res) => {
+  try {
+    const { name, phone, rooms, budget } = req.body;
+    if (!name || !phone) {
+      return res.status(400).json({ error: 'Name and phone are required' });
+    }
+    await connectDB();
+    const enquiry = await Enquiry.create({
+      name: String(name).slice(0, 100).trim(),
+      phone: String(phone).slice(0, 30).trim(),
+      rooms: typeof rooms === 'string' ? rooms.slice(0, 500) : (Array.isArray(rooms) ? rooms.slice(0, 20) : ''),
+      budget: budget ? String(budget).slice(0, 50).trim() : '',
+      createdAt: new Date()
+    });
+    res.json({ ok: true, id: enquiry._id });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to record enquiry' });
+  }
+});
+
+app.get('/api/admin/enquiries', requireAdmin, async (req, res) => {
+  try {
+    await connectDB();
+    const enquiries = await Enquiry.find().sort({ createdAt: -1 }).limit(100);
+    res.json(enquiries);
+  } catch {
+    res.json([]);
+  }
+});
+
+app.delete('/api/admin/enquiries/:id', requireAdmin, async (req, res) => {
+  try {
+    await connectDB();
+    await Enquiry.deleteOne({ _id: req.params.id });
     res.json({ ok: true });
   } catch {
     res.status(500).json({ error: 'DB error' });
